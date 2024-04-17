@@ -162,9 +162,11 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             // create the new audio source component on the game object and set up its properties
             AudioSource source = gameObject.AddComponent<AudioSource>();
+            AudioMixer mixer = Resources.Load<AudioMixer>("Audio/Mixer");
             source.clip = clip;
             source.volume = 0;
             source.loop = true;
+            source.outputAudioMixerGroup = mixer.FindMatchingGroups("Sound")[0];
 
             // start the clip from a random point
             source.time = Random.Range(0f, clip.length);

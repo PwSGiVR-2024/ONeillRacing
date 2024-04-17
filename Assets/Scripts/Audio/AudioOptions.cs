@@ -9,8 +9,16 @@ public class AudioOptions : MonoBehaviour {
     [SerializeField] Slider[] audioSlider;
 
     private void Start() {
-        for(int i = 0; i < audioLevel.Length; i++) {
-            audioSlider[i].value = PlayerPrefs.GetFloat($"Mixer_{i}");
+        if(PlayerPrefs.GetInt("FirstExe") == 0) {
+            for (int i = 0; i < audioLevel.Length; i++) {
+                audioSlider[i].value = PlayerPrefs.GetFloat($"Mixer_{i}");
+            }
+        }
+        else {
+            for (int i = 0; i < audioLevel.Length; i++) {
+                audioSlider[i].value = 1;
+            }
+            PlayerPrefs.SetInt("FirstExe", 0);
         }
         PlayerPrefs.Save();
     }
