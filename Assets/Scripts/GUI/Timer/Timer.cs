@@ -4,7 +4,7 @@ using UnityEngine;
 public class Timer : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerTxt;
-    float time = 0.0f;
+    static float time = 0.0f;
     bool timerOn = true;
 
     Finnish finnish;
@@ -31,5 +31,9 @@ public class Timer : MonoBehaviour
 
     void ChangeTimer() {
         timerOn = !timerOn;
+    }
+
+    public static float GetTime(){
+        return time;
     }
 }
