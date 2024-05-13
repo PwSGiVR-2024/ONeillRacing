@@ -33,7 +33,12 @@ public class Timer : MonoBehaviour
         timerOn = !timerOn;
     }
 
+    public static void ResetTimer()
+    {
+        time = 0;
+    }
+
     public static float GetTime(){
-        return time;
+        return Mathf.Round(time * 10f) / 10f; // Zaokr¹gla do jednego miejsca po przecinku;
     }
 }

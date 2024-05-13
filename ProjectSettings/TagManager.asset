@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Finnish
   - Menu
+  - Ghost
   layers:
   - Default
   - TransparentFX

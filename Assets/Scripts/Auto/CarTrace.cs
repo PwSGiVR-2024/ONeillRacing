@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CarTrace : MonoBehaviour
 {
-    List<TraceData> traceData;
+    public List<TraceData> traceData;
+    public int rand = 6;
 
     GameObject carobj = null;
     float carTime = 0; // wewnetrzny czas auta, zrobiony dla obslugi opoznienia, np. co 0.5 sekundy odczytuje czas z timera
 
     [SerializeField]
-    float readTimedelay = 0.5f; // x sekund opoznienia
+    float readTimedelay = 5f; // x sekund opoznienia
 
     private void FindCarOject(){
         carobj = GameObject.Find("Car");
@@ -40,11 +42,17 @@ public class CarTrace : MonoBehaviour
             
             if (CarExists()){
                 Vector3 pos = carobj.transform.position;
-                print("pos: " + pos + " time" + carTime);
+                //print("pos: " + pos + " time" + carTime);
                 TraceData tracedata = new TraceData(pos, carTime);
                 traceData.Add(tracedata);
             }
         }
+    }
+
+    public List<TraceData> GetTraceData()
+    {
+        print("[CarTrace] Robie return traceData");
+        return traceData;
     }
 
     // Start is called before the first frame update
@@ -56,5 +64,12 @@ public class CarTrace : MonoBehaviour
     // Update is called once per frame
     void Update(){
         CarGetTraceTime();
+        //print("--------------------------------------------------------\n");
+        //string s = "";
+        //foreach (TraceData obj in traceData)
+        //{
+        //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
+        //}
+        //print(s);
     }
 }
