@@ -8,22 +8,38 @@ public class Gravity : MonoBehaviour
     Rigidbody MyRigidbody;
     Vector3 OffcenterPosition;
     [SerializeField]
-    float strength = 0.01f;
-    float mass = 1f;
+    float surface_acceleration = 9.807f;
+    float object_mass = 1f;
+    [SerializeField]
+    float surface_distance = 100f;
     // Start is called before the first frame update
     void Start()
     {
         MyTransform = GetComponent<Transform>();
         MyRigidbody = GetComponent<Rigidbody>();
-        mass = MyRigidbody.mass;
+        object_mass = MyRigidbody.mass;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
+    {
+        float Downpull = surface_acceleration * object_mass * DistanceFromRotAxis()/surface_distance;
+        Downpull /= Time.deltaTime;
+        Vector3 GravityForce = DownDirection() * Downpull;
+        MyRigidbody.AddForce(OffcenterPosition);
+    }
+
+    Vector3 DownDirection()
     {
         OffcenterPosition = MyTransform.position;
         OffcenterPosition.x = 0;
-        OffcenterPosition *= strength;
-        MyRigidbody.AddForce(OffcenterPosition);
+        return OffcenterPosition.normalized;
+    }
+
+    float DistanceFromRotAxis()
+    {
+        OffcenterPosition = MyTransform.position;
+        OffcenterPosition.x = 0;
+        return OffcenterPosition.magnitude;
     }
 }
