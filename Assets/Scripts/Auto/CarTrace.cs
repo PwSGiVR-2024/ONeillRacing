@@ -64,12 +64,12 @@ public class CarTrace : MonoBehaviour
     // Update is called once per frame
     void Update(){
         CarGetTraceTime();
-        //print("--------------------------------------------------------\n");
-        //string s = "";
-        //foreach (TraceData obj in traceData)
-        //{
-        //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-        //}
-        //print(s);
+        print("------------------czas auta playera------------------------\n");
+        string s = "";
+        foreach (TraceData obj in traceData)
+        {
+            s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
+        }
+        print(s);
     }
 }

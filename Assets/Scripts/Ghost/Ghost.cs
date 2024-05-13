@@ -18,7 +18,7 @@ public class Ghost : MonoBehaviour
 
     public void setData(List<TraceData> _trace_) // trasa pobierana po pierwszym przejechaniu mety poprzez niewidoczny obiekt
     {
-        trace = _trace_;
+        trace = new List<TraceData>(_trace_);
         print("Ghost otrzymal " + trace);
 
         print("------------t ootrzxymal ghost--------------------\n");
@@ -40,10 +40,17 @@ public class Ghost : MonoBehaviour
     {
 
         int i = 0;
+        float timeFirst = 0;
+        float timeNext = 0;
+        float waitTime = 0;
         print("[Ghost] rozpoczynam korutyne" + trace);
         Timer.ResetTimer();
         foreach(TraceData obj in trace)
         {
+            timeNext = obj.time;
+            waitTime = timeNext - timeFirst;
+            timeFirst = timeNext;
+            print("Roznica czasu " + waitTime);
             i++;
 
             Vector3 position = GetGhostCurentPosition();
@@ -56,7 +63,7 @@ public class Ghost : MonoBehaviour
                 print("[Ghost]: changing position! to" + position);
             gameObject.transform.position = obj.place ;
             //}
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(waitTime);
         }
 
         print("Petla forech z korutyny wykonala sie " + i + " razy");
@@ -82,6 +89,7 @@ public class Ghost : MonoBehaviour
 
     void Start()
     {
+        trace = new List<TraceData>();
         ghostTransform = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Transform>();
         ghostRiding = GhostRiding();
         //player = GameObject.FindGameObjectWithTag("Player");

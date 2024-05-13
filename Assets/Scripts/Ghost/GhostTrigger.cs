@@ -91,6 +91,9 @@ public class GhostTrigger : MonoBehaviour
             ghostobj_ghost.setData(traceDataForGhost);
             ghostobj_ghost.runGhost();
             print("Zrobi³êm run ghost!");
+
+           // traceDataForGhost.Clear();
+            //traceDataForGhost = new List<TraceData>();
         }
         else
         {
