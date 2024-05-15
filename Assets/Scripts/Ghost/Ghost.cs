@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -56,6 +58,7 @@ public class Ghost : MonoBehaviour
             yield return new WaitForSeconds(waitTime);
         }
 
+        Destroy(gameObject);
         print("Petla forech z korutyny wykonala sie " + i + " razy");
 
         

@@ -88,18 +88,23 @@ public class GhostTrigger : MonoBehaviour
             ghostobj = Instantiate(myPrefab, player.GetComponent<Transform>().position, Quaternion.identity);
             Ghost ghostobj_ghost = ghostobj.GetComponent<Ghost>();
 
-            ghostobj_ghost.setData(traceDataForGhost);
+            float timeScore = playerTrace.GetCarTime();
+            playerTrace.SetScore(timeScore);
+            bool isBestScore = playerTrace.SetBestScore(timeScore);
+            if (isBestScore)
+            {
+                playerTrace.setBestTraceData(traceDataForGhost);
+            }
+
+            ghostobj_ghost.setData(playerTrace.getBestTraceData()); // ghost odzwierciedla tylko najlepsza trase
+            
             playerTrace.ClearCarTrace();
             Timer.ResetTimer();
+            
+            playerTrace.DebugShowScores();
+            playerTrace.DebugShowCarTime();
             playerTrace.ResetCarTimer();
             ghostobj_ghost.runGhost();
-
-            
-
-            print("Zrobi³êm run ghost!");
-
-           //traceDataForGhost.Clear();
-            //traceDataForGhost = new List<TraceData>();
         }
         else
         {
