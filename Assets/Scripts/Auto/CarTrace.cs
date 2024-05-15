@@ -25,6 +25,11 @@ public class CarTrace : MonoBehaviour
             return true;
     }
 
+    public void ResetCarTimer()
+    {
+        carTime = 0;
+    }
+
     private bool checkTimeAndDelay(float timerTime, float carTime){
         if (timerTime >= carTime + readTimedelay)
             return true;
@@ -61,15 +66,20 @@ public class CarTrace : MonoBehaviour
         FindCarOject();
     }
 
+    public void ClearCarTrace()
+    {
+        traceData.Clear();
+    }
+
     // Update is called once per frame
     void Update(){
         CarGetTraceTime();
-        print("------------------czas auta playera------------------------\n");
-        string s = "";
-        foreach (TraceData obj in traceData)
-        {
-            s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-        }
-        print(s);
+        //print("------------------czas auta playera------------------------\n");
+        //string s = "";
+        //foreach (TraceData obj in traceData)
+        //{
+        //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
+        //}
+        //print(s);
     }
 }

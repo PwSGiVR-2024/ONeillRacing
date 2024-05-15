@@ -77,22 +77,28 @@ public class GhostTrigger : MonoBehaviour
 
             List<TraceData> traceDataForGhost = playerTrace.GetTraceData() ;
 
-            print("--------------------------------------------------------\n");
-            string s = "";
-            foreach (TraceData obj in traceDataForGhost)
-            {
-                s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-            }
-            print(s);
+            //print("--------------------------------------------------------\n");
+            //string s = "";
+            //foreach (TraceData obj in traceDataForGhost)
+            //{
+            //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
+            //}
+            //print(s);
 
             ghostobj = Instantiate(myPrefab, player.GetComponent<Transform>().position, Quaternion.identity);
             Ghost ghostobj_ghost = ghostobj.GetComponent<Ghost>();
 
             ghostobj_ghost.setData(traceDataForGhost);
+            playerTrace.ClearCarTrace();
+            Timer.ResetTimer();
+            playerTrace.ResetCarTimer();
             ghostobj_ghost.runGhost();
+
+            
+
             print("Zrobi³êm run ghost!");
 
-           // traceDataForGhost.Clear();
+           //traceDataForGhost.Clear();
             //traceDataForGhost = new List<TraceData>();
         }
         else

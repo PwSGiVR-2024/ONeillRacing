@@ -19,9 +19,7 @@ public class Ghost : MonoBehaviour
     public void setData(List<TraceData> _trace_) // trasa pobierana po pierwszym przejechaniu mety poprzez niewidoczny obiekt
     {
         trace = new List<TraceData>(_trace_);
-        print("Ghost otrzymal " + trace);
-
-        print("------------t ootrzxymal ghost--------------------\n");
+        print("------------Ghost otrzymal--------------------\n");
         string s = "";
         foreach (TraceData obj in trace)
         {
@@ -44,25 +42,17 @@ public class Ghost : MonoBehaviour
         float timeNext = 0;
         float waitTime = 0;
         print("[Ghost] rozpoczynam korutyne" + trace);
-        Timer.ResetTimer();
+        //Timer.ResetTimer();
         foreach(TraceData obj in trace)
         {
             timeNext = obj.time;
             waitTime = timeNext - timeFirst;
             timeFirst = timeNext;
-            print("Roznica czasu " + waitTime);
+            //print("Roznica czasu " + waitTime);
             i++;
-
-            Vector3 position = GetGhostCurentPosition();
-            //float time = Timer.GetTime();
-            //Vector3 newPosition = obj.tryGetTraceFromTime(time,position);
-            
-            print("[Ghost] patrze na wartosci");
-           // if (PositionChanged(position, newPosition))
-           // {
-                print("[Ghost]: changing position! to" + position);
+            //Vector3 position = GetGhostCurentPosition();
+            //print("[Ghost]: changing position! to" + position);
             gameObject.transform.position = obj.place ;
-            //}
             yield return new WaitForSeconds(waitTime);
         }
 
@@ -83,7 +73,7 @@ public class Ghost : MonoBehaviour
     private Vector3 GetGhostCurentPosition()
     {
         Vector3 possd = gameObject.transform.position;
-        print("[Ghost]: current position: " + possd.x + " " + possd.y + " " + possd.z);
+        //print("[Ghost]: current position: " + possd.x + " " + possd.y + " " + possd.z);
         return gameObject.transform.position;
     }
 
