@@ -77,23 +77,34 @@ public class GhostTrigger : MonoBehaviour
 
             List<TraceData> traceDataForGhost = playerTrace.GetTraceData() ;
 
-            print("--------------------------------------------------------\n");
-            string s = "";
-            foreach (TraceData obj in traceDataForGhost)
-            {
-                s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-            }
-            print(s);
+            //print("--------------------------------------------------------\n");
+            //string s = "";
+            //foreach (TraceData obj in traceDataForGhost)
+            //{
+            //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
+            //}
+            //print(s);
 
             ghostobj = Instantiate(myPrefab, player.GetComponent<Transform>().position, Quaternion.identity);
             Ghost ghostobj_ghost = ghostobj.GetComponent<Ghost>();
 
-            ghostobj_ghost.setData(traceDataForGhost);
-            ghostobj_ghost.runGhost();
-            print("Zrobi³êm run ghost!");
+            float timeScore = playerTrace.GetCarTime();
+            playerTrace.SetScore(timeScore);
+            bool isBestScore = playerTrace.SetBestScore(timeScore);
+            if (isBestScore)
+            {
+                playerTrace.setBestTraceData(traceDataForGhost);
+            }
 
-           // traceDataForGhost.Clear();
-            //traceDataForGhost = new List<TraceData>();
+            ghostobj_ghost.setData(playerTrace.getBestTraceData()); // ghost odzwierciedla tylko najlepsza trase
+            
+            playerTrace.ClearCarTrace();
+            Timer.ResetTimer();
+            
+            playerTrace.DebugShowScores();
+            playerTrace.DebugShowCarTime();
+            playerTrace.ResetCarTimer();
+            ghostobj_ghost.runGhost();
         }
         else
         {
