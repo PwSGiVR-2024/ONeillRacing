@@ -90,8 +90,9 @@ public class CarTrace : MonoBehaviour
             
             if (CarExists()){
                 Vector3 pos = carobj.transform.position;
-                //print("pos: " + pos + " time" + carTime);
-                TraceData tracedata = new TraceData(pos, carTime);
+                Quaternion rot = carobj.transform.rotation;
+                print("pos: " + pos + " time" + carTime);
+                TraceData tracedata = new TraceData(pos, carTime,rot);
                 traceData.Add(tracedata);
             }
         }

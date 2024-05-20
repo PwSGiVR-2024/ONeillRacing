@@ -50,11 +50,19 @@ public class Ghost : MonoBehaviour
             timeNext = obj.time;
             waitTime = timeNext - timeFirst;
             timeFirst = timeNext;
-            //print("Roznica czasu " + waitTime);
+            print("Roznica czasu " + waitTime);
             i++;
             //Vector3 position = GetGhostCurentPosition();
             //print("[Ghost]: changing position! to" + position);
-            gameObject.transform.position = obj.place ;
+            Vector3 posA = gameObject.transform.position;
+            Vector3 posB = obj.place;
+            gameObject.transform.position = obj.place ; // teleportacja
+            gameObject.transform.rotation = obj.roatation;
+
+            // jednak tez robi tekeoportacje przy tym 
+            //float step = waitTime * 1000 * Time.deltaTime;
+            //transform.position = Vector3.MoveTowards(posA, posB, step);
+
             yield return new WaitForSeconds(waitTime);
         }
 

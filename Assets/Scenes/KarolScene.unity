@@ -297,7 +297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostobj: {fileID: 0}
-  myPrefab: {fileID: 4238223740750431725, guid: d070b46eae0edac458b0b40a7c63dd1e, type: 3}
+  myPrefab: {fileID: 7919164785837134600, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
 --- !u!136 &132468846
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6404,6 +6404,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d070b46eae0edac458b0b40a7c63dd1e, type: 3}
+--- !u!1001 &6874204451957046623
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.509245
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00091552734
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.797
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2753727492283732236, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919164785837134600, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+      propertyPath: m_Name
+      value: GhostCar
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6419,3 +6476,4 @@ SceneRoots:
   - {fileID: 945177412}
   - {fileID: 6671760749722558957}
   - {fileID: 132468849}
+  - {fileID: 6874204451957046623}

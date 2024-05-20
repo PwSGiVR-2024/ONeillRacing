@@ -6,11 +6,19 @@ using UnityEngine;
 public class TraceData
 {
     public Vector3 place;
-    public float time; 
+    public float time;
+    public Quaternion roatation;
+
     public TraceData(Vector3 trace,float time_)
     {
         place = trace; 
         time = time_;
+    }
+    public TraceData(Vector3 trace, float time_, Quaternion rot)
+    {
+        place = trace;
+        time = time_;
+        roatation = rot;
     }
     public Vector3 tryGetTraceFromTime(float _time_, Vector3 _place_)
     {
