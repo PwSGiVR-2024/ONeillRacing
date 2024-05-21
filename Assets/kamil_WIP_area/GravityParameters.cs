@@ -31,6 +31,11 @@ public class GravityParameters : MonoBehaviour
     }
 
     public float GetCylinderAngularVelocity() {
-        return CylinderAngularVelocity;
+        return CylinderAngularVelocity;//returns in radians per second
+    }
+
+    public float GetCylinderAngularVelocityDegrees()
+    {
+        return CylinderAngularVelocity*Mathf.Rad2Deg;//returns in radians per second
     }
 }

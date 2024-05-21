@@ -16,7 +16,7 @@ public class TestForceApplicator : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            GetComponent<Rigidbody>().AddForce(GetComponent<Transform>().forward*forceInstant);
+            GetComponent<Rigidbody>().AddForce(GetComponent<Transform>().up*forceInstant);
         }
     }
 }

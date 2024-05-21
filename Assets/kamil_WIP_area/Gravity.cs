@@ -20,42 +20,65 @@ public class Gravity : MonoBehaviour
     bool cancelRealCentrifugalForce = false;
 
     [SerializeField]
+    bool rotateVelocity = true;
+
+    [SerializeField]
     bool applyFakeCentrifugalForce = false;
 
-    GravityParameters gravparams;
+    GravityParameters gravParams;
     void Start()
     {
         myTransform = GetComponent<Transform>();
         myRigidbody = GetComponent<Rigidbody>();
         objectMass = myRigidbody.mass;
-        gravparams = GravityParameters.GetInstance();
+        gravParams = GravityParameters.GetInstance();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (gravparams == null) { gravparams = GravityParameters.GetInstance(); }
-        float basicDownpull = gravparams.GetSurfaceAcceleration() * objectMass * gravityFactor;
+        if (gravParams == null) { gravParams = GravityParameters.GetInstance(); }
+        float basicDownpull = gravParams.GetSurfaceAcceleration() * objectMass * gravityFactor;
         basicDownpull /= Time.deltaTime;
         Vector3 GravityForce = DownDirection() * basicDownpull;
         if (applyBasicGravity) { myRigidbody.AddForce(offcenterPosition); }
         if (cancelRealCentrifugalForce) { myRigidbody.AddForce(-1* gravityFactor * objectMass*RealCentrifugalAcceleration()); }
-        if (applyFakeCentrifugalForce) { myRigidbody.AddForce(gravityFactor * objectMass * FakeCentrifugalAcceleration()); }
-        print(FakeCentrifugalAcceleration().magnitude);
+        //if (applyFakeCentrifugalForce) { myRigidbody.AddForce(gravityFactor * objectMass * FakeCentrifugalAcceleration()); }
+        if (rotateVelocity) { myRigidbody.AddForce(objectMass*TrajectoryTurningForce()); }
+        //print(FakeCentrifugalAcceleration().magnitude);
     }
 
-    Vector3 DownDirection()
-    {
+    Vector3 VectorFromRotAxis() {
         offcenterPosition = myTransform.position;
         offcenterPosition.x = 0;
-        return offcenterPosition.normalized;
+        return offcenterPosition;
+    }
+    Vector3 DownDirection()
+    {
+        return VectorFromRotAxis().normalized;
     }
 
     float DistanceFromRotAxis()
     {
-        offcenterPosition = myTransform.position;
-        offcenterPosition.x = 0;
-        return offcenterPosition.magnitude;
+        return VectorFromRotAxis().magnitude;
+    }
+
+    void RotateVelocity() {
+        Vector3 inPlaneVelocity = myRigidbody.velocity;
+        inPlaneVelocity.x = 0;
+        Vector3 rotationTarget = Vector3.Cross(inPlaneVelocity, new Vector3(1,0,0));
+        Vector3.RotateTowards(inPlaneVelocity, rotationTarget, gravParams.GetCylinderAngularVelocity() * Time.fixedDeltaTime,0);
+        inPlaneVelocity.x = myRigidbody.velocity.x;
+        myRigidbody.velocity = inPlaneVelocity;
+    }
+
+    Vector3 TrajectoryTurningForce()
+    {
+        Vector3 inPlaneVelocity = myRigidbody.velocity;
+        inPlaneVelocity.x = 0;
+        Vector3 turner = Vector3.Cross(inPlaneVelocity, new Vector3(1, 0, 0));
+        turner *= gravParams.GetCylinderAngularVelocity();
+        return turner;
     }
 
     float RealAngularVelocity() {
@@ -91,7 +114,7 @@ public class Gravity : MonoBehaviour
         offcenterVelocity.x = 0;
         Vector3 velocityDirectionVector = Vector3.Cross(offcenterVelocity, offcenterPosition).normalized;
         float velocityDirection = velocityDirectionVector.x;//should be -1 when moving one way & 1 when moving the other way
-        Vector3 centAcc = DownDirection() * DistanceFromRotAxis() * Mathf.Pow(gravparams.GetCylinderAngularVelocity()+(RealAngularVelocity()*velocityDirection),2);
+        Vector3 centAcc = DownDirection() * DistanceFromRotAxis() * Mathf.Pow(gravParams.GetCylinderAngularVelocity()+(RealAngularVelocity()*velocityDirection),2);
         return centAcc;
     }
 }
