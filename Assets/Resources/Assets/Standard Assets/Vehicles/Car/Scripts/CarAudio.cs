@@ -129,17 +129,17 @@ namespace UnityStandardAssets.Vehicles.Car
 
                     // get values for fading the sounds based on the acceleration
                     float accFade = Mathf.Abs(m_CarController.AccelInput);
-                    float decFade = 1 - accFade;
+                    float decFade = 0.85f - accFade;
 
                     // get the high fade value based on the cars revs
                     float highFade = Mathf.InverseLerp(0.2f, 0.8f, m_CarController.Revs);
-                    float lowFade = 1 - highFade;
+                    float lowFade = 0.85f - highFade;
 
                     // adjust the values to be more realistic
-                    highFade = 1 - ((1 - highFade)*(1 - highFade));
-                    lowFade = 1 - ((1 - lowFade)*(1 - lowFade));
-                    accFade = 1 - ((1 - accFade)*(1 - accFade));
-                    decFade = 1 - ((1 - decFade)*(1 - decFade));
+                    highFade = 0.85f - ((0.85f - highFade)*(0.85f - highFade));
+                    lowFade = 0.85f - ((0.85f - lowFade)*(0.85f - lowFade));
+                    accFade = 0.85f - ((0.85f - accFade)*(0.85f - accFade));
+                    decFade = 0.85f - ((0.85f - decFade)*(0.85f - decFade));
 
                     // adjust the source volumes based on the fade values
                     m_LowAccel.volume = lowFade*accFade;
