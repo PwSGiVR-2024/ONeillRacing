@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public class Gravity : MonoBehaviour
 {
@@ -37,13 +38,13 @@ public class Gravity : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (gravParams == null) { gravParams = GravityParameters.GetInstance(); }
+        //if (gravParams == null) { gravParams = GravityParameters.GetInstance(); }
         float basicDownpull = gravParams.GetSurfaceAcceleration() * objectMass * gravityFactor;
         basicDownpull /= Time.deltaTime;
         Vector3 GravityForce = DownDirection() * basicDownpull;
         if (applyBasicGravity) { myRigidbody.AddForce(offcenterPosition); }
         if (cancelRealCentrifugalForce) { myRigidbody.AddForce(-1* gravityFactor * objectMass*RealCentrifugalAcceleration()); }
-        //if (applyFakeCentrifugalForce) { myRigidbody.AddForce(gravityFactor * objectMass * FakeCentrifugalAcceleration()); }
+        if (applyFakeCentrifugalForce) { myRigidbody.AddForce(gravityFactor * objectMass * CentrifugalForce()); }
         if (rotateVelocity) { myRigidbody.AddForce(objectMass*TrajectoryTurningForce()); }
         //print(FakeCentrifugalAcceleration().magnitude);
     }
@@ -63,15 +64,6 @@ public class Gravity : MonoBehaviour
         return VectorFromRotAxis().magnitude;
     }
 
-    void RotateVelocity() {
-        Vector3 inPlaneVelocity = myRigidbody.velocity;
-        inPlaneVelocity.x = 0;
-        Vector3 rotationTarget = Vector3.Cross(inPlaneVelocity, new Vector3(1,0,0));
-        Vector3.RotateTowards(inPlaneVelocity, rotationTarget, gravParams.GetCylinderAngularVelocity() * Time.fixedDeltaTime,0);
-        inPlaneVelocity.x = myRigidbody.velocity.x;
-        myRigidbody.velocity = inPlaneVelocity;
-    }
-
     Vector3 TrajectoryTurningForce()
     {
         Vector3 inPlaneVelocity = myRigidbody.velocity;
@@ -79,6 +71,30 @@ public class Gravity : MonoBehaviour
         Vector3 turner = Vector3.Cross(inPlaneVelocity, new Vector3(1, 0, 0));
         turner *= gravParams.GetCylinderAngularVelocity();
         return turner;
+    }
+
+    Vector3 CentrifugalForce() {
+        //now calculating the tangential velocity that an object static in relation to the ground would have
+        //https://en.wikipedia.org/wiki/Tangential_speed
+        Vector3 staticTangentialVelocity = Vector3.Cross(DownDirection(), new Vector3(1, 0, 0));
+        staticTangentialVelocity *= DistanceFromRotAxis() * gravParams.GetCylinderAngularVelocity();
+
+        //real velocity of the object in a plane at 90deg to the cylinder's axis of rotation (x axis)
+        Vector3 inPlaneVelocity = myRigidbody.velocity;
+        inPlaneVelocity.x = 0;
+
+        //tengential velocity of the object around the central axis based on it's real velocity, this part needs fixing
+        Vector3 realTangentalVelocity = Vector3.Project(inPlaneVelocity,staticTangentialVelocity);
+        //if the vectors are at 90deg to each other, it should result in a vector of 0,0,0
+
+        
+        Vector3 fakeTangentialVelocity = realTangentalVelocity - staticTangentialVelocity;
+        float fakeAngularVelocity = fakeTangentialVelocity.magnitude/DistanceFromRotAxis();//w=v/r
+        Vector3 centrifugalForce = VectorFromRotAxis() * fakeAngularVelocity * fakeAngularVelocity;
+
+        print("real vel: " + realTangentalVelocity.magnitude + "m/s , fake vel: " + fakeTangentialVelocity.magnitude + "m/s , cent. acc: " + centrifugalForce.magnitude + "m/s^2 = " + (centrifugalForce.magnitude/9.807) +"g");
+
+        return centrifugalForce;
     }
 
     float RealAngularVelocity() {
