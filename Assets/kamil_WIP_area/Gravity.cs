@@ -26,6 +26,8 @@ public class Gravity : MonoBehaviour
     [SerializeField]
     bool applyFakeCentrifugalForce = false;
 
+    float previousAxisDistance;
+
     GravityParameters gravParams;
     void Start()
     {
@@ -33,6 +35,7 @@ public class Gravity : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody>();
         objectMass = myRigidbody.mass;
         gravParams = GravityParameters.GetInstance();
+        previousAxisDistance = DistanceFromRotAxis();
     }
 
     // Update is called once per frame
@@ -45,7 +48,11 @@ public class Gravity : MonoBehaviour
         if (applyBasicGravity) { myRigidbody.AddForce(offcenterPosition); }
         if (cancelRealCentrifugalForce) { myRigidbody.AddForce(-1* gravityFactor * objectMass*RealCentrifugalAcceleration()); }
         if (applyFakeCentrifugalForce) { myRigidbody.AddForce(gravityFactor * objectMass * CentrifugalForce()); }
-        if (rotateVelocity) { myRigidbody.AddForce(objectMass*TrajectoryTurningForce()); }
+        if (rotateVelocity) {
+            RotateVelocity();
+            MaintainTengentialVelocity();
+            previousAxisDistance = DistanceFromRotAxis();
+        }
         //print(FakeCentrifugalAcceleration().magnitude);
     }
 
@@ -71,6 +78,35 @@ public class Gravity : MonoBehaviour
         Vector3 turner = Vector3.Cross(inPlaneVelocity, new Vector3(1, 0, 0));
         turner *= gravParams.GetCylinderAngularVelocity();
         return turner;
+    }
+
+    void RotateVelocity()
+    {
+        float rot = -Time.fixedDeltaTime * gravParams.GetCylinderAngularVelocity();
+        Vector3 inPlaneVelocity = myRigidbody.velocity;
+
+        //now I rotate the y and z of the vector like it's a 2d vector
+        float y = inPlaneVelocity.y;
+        float z = inPlaneVelocity.z;
+        inPlaneVelocity.y = (y * Mathf.Cos(rot)) - (z * Mathf.Sin(rot));
+        inPlaneVelocity.z = (inPlaneVelocity.y * Mathf.Sin(rot)) + (inPlaneVelocity.z * Mathf.Cos(rot));
+
+        myRigidbody.velocity = inPlaneVelocity;
+    }
+
+    void MaintainTengentialVelocity()
+    {
+        //now calculating the tangential velocity that an object static in relation to the ground would have
+        //https://en.wikipedia.org/wiki/Tangential_speed
+        Vector3 staticTangentialVelocity = Vector3.Cross(DownDirection(), new Vector3(1, 0, 0));
+        staticTangentialVelocity *= DistanceFromRotAxis() * gravParams.GetCylinderAngularVelocity();
+
+        float approachSpeed = Vector3.Project(myRigidbody.velocity, -1*DownDirection()).magnitude;
+        //now I need a way to tell if it's moving towards the center or away from it, because otherwise it works for upwards movement yet breaks downwards movement
+        //for now it's an extremely ugly fix, I just compare the distance now to previous distance
+        if (previousAxisDistance < DistanceFromRotAxis()) { approachSpeed *= -1; }
+
+       myRigidbody.AddForce(staticTangentialVelocity * approachSpeed / -DistanceFromRotAxis());
     }
 
     Vector3 CentrifugalForce() {
