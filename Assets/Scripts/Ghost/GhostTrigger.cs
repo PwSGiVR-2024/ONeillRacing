@@ -18,7 +18,7 @@ public class GhostTrigger : MonoBehaviour
     bool isPlayer = false;
     bool isGhost = false; 
     CarTrace playerTrace;
-    public GameObject ghostobj; 
+    public GameObject ghostGameObject; 
 
     [SerializeField]
     public GameObject myPrefab;
@@ -48,68 +48,71 @@ public class GhostTrigger : MonoBehaviour
         }
     }
 
+    CarTrace tryGetPlayerTrace()
+    {
+        try
+        {
+            CarTrace trace = player.GetComponent<CarTrace>();
+            return trace;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
 
-    public void OnTriggerExit(Collider colider)
+    private IEnumerator spawnGhost(Collider colider)
     {
         print(colider.gameObject.tag + " " + colider.name);
 
         if (colider.CompareTag("Player")) //colider.gameObject.tag == "Player"
         {
-            if (isPlayer)
+            if (isPlayer) // TODO zrobic to w try catch 
             {
-                playerTrace = player.GetComponent<CarTrace>();
-                if (playerTrace != null){
-                    print(playerTrace.rand);
-                }
-                else
+                playerTrace = tryGetPlayerTrace();
+                if (playerTrace == null)
                 {
                     Debug.LogWarning("Brak skryptu CarTrace na obiekcie: " + colider.name);
-                    return;
+                    StopCoroutine(spawnGhost(colider));
                 }
-                //gameObject.GetComponent<CapsuleCollider>().enabled = false;
             }
-            //player = colider.gameObject;
-            //ghost = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Ghost>();
 
-            playerTrace = player.GetComponent<CarTrace>();
+            List<TraceData> traceDataForGhost = playerTrace.GetTraceData();
 
-            // print(playerTrace.rand);
-
-            List<TraceData> traceDataForGhost = playerTrace.GetTraceData() ;
-
-            //print("--------------------------------------------------------\n");
-            //string s = "";
-            //foreach (TraceData obj in traceDataForGhost)
-            //{
-            //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-            //}
-            //print(s);
-
-            ghostobj = Instantiate(myPrefab, player.GetComponent<Transform>().position, Quaternion.identity);
-            Ghost ghostobj_ghost = ghostobj.GetComponent<Ghost>();
+            ghostGameObject = Instantiate(myPrefab, player.GetComponent<Transform>().position, Quaternion.identity);
+            
+            Ghost ghost = ghostGameObject.GetComponent<Ghost>();
 
             float timeScore = playerTrace.GetCarTime();
             playerTrace.SetScore(timeScore);
+            
             bool isBestScore = playerTrace.SetBestScore(timeScore);
+            
             if (isBestScore)
             {
                 playerTrace.setBestTraceData(traceDataForGhost);
             }
 
-            ghostobj_ghost.setData(playerTrace.getBestTraceData()); // ghost odzwierciedla tylko najlepsza trase
-            
+            ghost.setData(playerTrace.getBestTraceData()); // ghost odzwierciedla tylko najlepsza trase
+
             playerTrace.ClearCarTrace();
             Timer.ResetTimer();
-            
+
             playerTrace.DebugShowScores();
             playerTrace.DebugShowCarTime();
             playerTrace.ResetCarTimer();
-            ghostobj_ghost.runGhost();
+            ghost.runGhost();
         }
         else
         {
             print("[GhostTrigger]: Nie widze colidera");
         }
+        yield return null;
+    }
+
+    public void OnTriggerExit(Collider colider)
+    {
+        StartCoroutine(spawnGhost(colider));
     }
 
     // Start is called before the first frame update
@@ -125,3 +128,17 @@ public class GhostTrigger : MonoBehaviour
         
     }
 }
+
+//player = colider.gameObject;
+//ghost = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Ghost>();
+
+//playerTrace = player.GetComponent<CarTrace>();
+
+// print(playerTrace.rand);
+//print("--------------------------------------------------------\n");
+//string s = "";
+//foreach (TraceData obj in traceDataForGhost)
+//{
+//    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
+//}
+//print(s);
