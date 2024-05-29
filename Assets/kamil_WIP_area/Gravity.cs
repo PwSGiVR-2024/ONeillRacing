@@ -12,21 +12,12 @@ public class Gravity : MonoBehaviour
     float objectMass = 1f;
 
     [SerializeField]
-    float gravityFactor = 1;
-
-    [SerializeField]
-    bool applyBasicGravity = true;
-
-    [SerializeField]
-    bool cancelRealCentrifugalForce = false;
-
-    [SerializeField]
-    bool rotateVelocity = true;
-
-    [SerializeField]
-    bool applyFakeCentrifugalForce = false;
+    float scaleForces = 1;
 
     float previousAxisDistance;
+    float previousVelocity = 0;
+    float previousGforce = 0;
+    Vector3 neutralForces;//forces applied by all the functions to keep the body moving in a straight line
 
     GravityParameters gravParams;
     void Start()
@@ -41,19 +32,12 @@ public class Gravity : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //if (gravParams == null) { gravParams = GravityParameters.GetInstance(); }
-        float basicDownpull = gravParams.GetSurfaceAcceleration() * objectMass * gravityFactor;
-        basicDownpull /= Time.deltaTime;
-        Vector3 GravityForce = DownDirection() * basicDownpull;
-        if (applyBasicGravity) { myRigidbody.AddForce(offcenterPosition); }
-        if (cancelRealCentrifugalForce) { myRigidbody.AddForce(-1* gravityFactor * objectMass*RealCentrifugalAcceleration()); }
-        if (applyFakeCentrifugalForce) { myRigidbody.AddForce(gravityFactor * objectMass * CentrifugalForce()); }
-        if (rotateVelocity) {
-            RotateVelocity();
-            MaintainTengentialVelocity();
-            previousAxisDistance = DistanceFromRotAxis();
-        }
-        //print(FakeCentrifugalAcceleration().magnitude);
+        neutralForces = Vector3.zero;
+        myRigidbody.AddForce(objectMass * FakeCentrifugalAcceleration() * scaleForces);//applies centrifugal force calculated as if the cylinder was rotating
+        RotateVelocity();//velocity vector is rotated oposite to rotation of the cylinder, causing the direction of movement change as if it was actually moving in a straight line with the cylinder rotating around it instead
+        MaintainTengentialVelocity();//changes velocity of a body moving in a "straight line" so that it does not veer off to the sides - ie. makes it veer off to the side when you assume cylinder is static
+        previousVelocity = myRigidbody.velocity.magnitude;
+        print(neutralForces + " / " + (myRigidbody.GetAccumulatedForce()/objectMass));
     }
 
     Vector3 VectorFromRotAxis() {
@@ -71,17 +55,9 @@ public class Gravity : MonoBehaviour
         return VectorFromRotAxis().magnitude;
     }
 
-    Vector3 TrajectoryTurningForce()
-    {
-        Vector3 inPlaneVelocity = myRigidbody.velocity;
-        inPlaneVelocity.x = 0;
-        Vector3 turner = Vector3.Cross(inPlaneVelocity, new Vector3(1, 0, 0));
-        turner *= gravParams.GetCylinderAngularVelocity();
-        return turner;
-    }
-
     void RotateVelocity()
     {
+        Vector3 velocityBefore = myRigidbody.velocity;
         float rot = -Time.fixedDeltaTime * gravParams.GetCylinderAngularVelocity();
         Vector3 inPlaneVelocity = myRigidbody.velocity;
 
@@ -92,6 +68,8 @@ public class Gravity : MonoBehaviour
         inPlaneVelocity.z = (inPlaneVelocity.y * Mathf.Sin(rot)) + (inPlaneVelocity.z * Mathf.Cos(rot));
 
         myRigidbody.velocity = inPlaneVelocity;
+
+        neutralForces += (myRigidbody.velocity - velocityBefore)/Time.fixedDeltaTime;
     }
 
     void MaintainTengentialVelocity()
@@ -106,10 +84,14 @@ public class Gravity : MonoBehaviour
         //for now it's an extremely ugly fix, I just compare the distance now to previous distance
         if (previousAxisDistance < DistanceFromRotAxis()) { approachSpeed *= -1; }
 
-       myRigidbody.AddForce(staticTangentialVelocity * approachSpeed / -DistanceFromRotAxis());
+        Vector3 force = staticTangentialVelocity * approachSpeed / -DistanceFromRotAxis();
+        //at exactly center of the cylinder this divides by zero, but that's a zero probability scenario
+        myRigidbody.AddForce(force*myRigidbody.mass* scaleForces);
+        previousAxisDistance = DistanceFromRotAxis();
+        neutralForces += force;
     }
 
-    Vector3 CentrifugalForce() {
+    Vector3 FakeCentrifugalAcceleration() {
         //now calculating the tangential velocity that an object static in relation to the ground would have
         //https://en.wikipedia.org/wiki/Tangential_speed
         Vector3 staticTangentialVelocity = Vector3.Cross(DownDirection(), new Vector3(1, 0, 0));
@@ -128,45 +110,19 @@ public class Gravity : MonoBehaviour
         float fakeAngularVelocity = fakeTangentialVelocity.magnitude/DistanceFromRotAxis();//w=v/r
         Vector3 centrifugalForce = VectorFromRotAxis() * fakeAngularVelocity * fakeAngularVelocity;
 
-        print("real vel: " + realTangentalVelocity.magnitude + "m/s , fake vel: " + fakeTangentialVelocity.magnitude + "m/s , cent. acc: " + centrifugalForce.magnitude + "m/s^2 = " + (centrifugalForce.magnitude/9.807) +"g");
+        //print("real vel: " + realTangentalVelocity.magnitude + "m/s , fake vel: " + fakeTangentialVelocity.magnitude + "m/s , cent. acc: " + centrifugalForce.magnitude + "m/s^2 = " + (centrifugalForce.magnitude/9.807) +"g");
 
+        neutralForces += centrifugalForce;
         return centrifugalForce;
     }
 
-    float RealAngularVelocity() {
-        offcenterPosition = myTransform.position;
-        offcenterPosition.x = 0;
-        offcenterVelocity = myRigidbody.velocity;
-        offcenterVelocity.x = 0;
-        float angle = Vector3.AngleBetween(offcenterPosition, offcenterVelocity);//as angle between 0 and 180, in degrees
-        angle = Mathf.Abs((angle-90) / 90); // as angle between -1 and 1 - gives 0 when perfectly aligned, 1 when perpendicular
-        float tangentalVelocity = offcenterVelocity.magnitude * angle;
-
-        float circlePath = Mathf.PI * 2 * offcenterPosition.magnitude; //2*pi*r
-        float timeToFullRotation = circlePath / tangentalVelocity; //time to complete a full circle, in seconds
-        float angVel = 2*Mathf.PI/timeToFullRotation; //angular velocity in radians per second
-        return angVel;
-    }
-
-    Vector3 RealCentrifugalAcceleration() {
-        Vector3 centAcc = DownDirection() * DistanceFromRotAxis() * RealAngularVelocity() * RealAngularVelocity(); //r*w^2
-
-        return centAcc;
-    }
-
-    float FakeAngularVelocity() {
-        return 0; //TODO
-    }
-
-    Vector3 FakeCentrifugalAcceleration()
-    {
-        offcenterPosition = myTransform.position;
-        offcenterPosition.x = 0;
-        offcenterVelocity = myRigidbody.velocity;
-        offcenterVelocity.x = 0;
-        Vector3 velocityDirectionVector = Vector3.Cross(offcenterVelocity, offcenterPosition).normalized;
-        float velocityDirection = velocityDirectionVector.x;//should be -1 when moving one way & 1 when moving the other way
-        Vector3 centAcc = DownDirection() * DistanceFromRotAxis() * Mathf.Pow(gravParams.GetCylinderAngularVelocity()+(RealAngularVelocity()*velocityDirection),2);
-        return centAcc;
+    public float GetGForce(int precision=100, int smoothing=0) {
+        //float gravityAcceleration = FakeCentrifugalAcceleration().magnitude;
+        //float actualAcceleration = Mathf.Abs(myRigidbody.velocity.magnitude - previousVelocity)/Time.fixedDeltaTime;
+        float totalAcceleration = (neutralForces - (myRigidbody.GetAccumulatedForce()/myRigidbody.mass)).magnitude;
+        float newGForce = totalAcceleration / 9.807f;
+        float gForce =  ((previousGforce * smoothing) + (newGForce) )/(smoothing+1);
+        previousGforce =  gForce;
+        return (float)((int)(precision * gForce)) / precision;
     }
 }
