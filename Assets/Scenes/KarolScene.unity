@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 979851b7624cad541a55644c5f2ffd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghostobj: {fileID: 0}
+  ghostGameObject: {fileID: 0}
   myPrefab: {fileID: 7919164785837134600, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
 --- !u!136 &132468846
 CapsuleCollider:
@@ -6181,7 +6181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rand: 6
-  readTimedelay: 0.1
+  readTimedelay: 0.0001
 --- !u!43 &1963498575
 Mesh:
   m_ObjectHideFlags: 0

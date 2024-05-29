@@ -39,6 +39,7 @@ public class Timer : MonoBehaviour
     }
 
     public static float GetTime(){
-        return Mathf.Round(time * 10f) / 10f; // Zaokr¹gla do jednego miejsca po przecinku;
+        return time;
+        //return Mathf.Round(time * 10f) / 10f; // Zaokr¹gla do jednego miejsca po przecinku;
     }
 }
