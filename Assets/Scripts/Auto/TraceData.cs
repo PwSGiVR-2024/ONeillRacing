@@ -8,6 +8,8 @@ public class TraceData
     public Vector3 place;
     public float time;
     public Quaternion roatation;
+    public Vector3 velocity;
+    public Vector3 rotationVelocity; 
 
     public TraceData(Vector3 trace,float time_)
     {
@@ -19,6 +21,21 @@ public class TraceData
         place = trace;
         time = time_;
         roatation = rot;
+    }
+    public TraceData(Vector3 trace, float time_, Quaternion rot, Vector3 _velocity_)
+    {
+        place = trace;
+        time = time_;
+        roatation = rot;
+        velocity = _velocity_;
+    }
+    public TraceData(Vector3 trace, float time_, Quaternion rot, Vector3 _velocity_, Vector3 _rotationVelocity_)
+    {
+        place = trace;
+        time = time_;
+        roatation = rot;
+        velocity = _velocity_;
+        rotationVelocity = _rotationVelocity_;
     }
     public Vector3 tryGetTraceFromTime(float _time_, Vector3 _place_)
     {

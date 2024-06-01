@@ -2,26 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SocialPlatforms.Impl;
+using System;
+using UnityEngine.UIElements;
+using UnityEngine.Experimental.AI;
 
 public class CarTrace : MonoBehaviour
 {
     public List<TraceData> traceData;
     public List<TraceData> bestTraceData;
     public int rand = 6;
+    public bool isBestTraceDataSetted = false;
+
+    Rigidbody carRigidBody; 
 
     GameObject carobj = null;
-    float carTime = 0; // wewnetrzny czas auta, zrobiony dla obslugi opoznienia, np. co 0.5 sekundy odczytuje czas z timera
+    float carTime = 0.0f; // wewnetrzny czas auta, zrobiony dla obslugi opoznienia, np. co 0.5 sekundy odczytuje czas z timera
+    float lastTime = 0.0f; // czas do korutyny bo timer z canvasa raz dodaje 0.01 a raz 0.02 do czasu  
+
+    [SerializeField]
+    bool showCarTraceDataFlow;
+    
+    [SerializeField]
+    bool showCarTimeAndTimerTime;
 
     [SerializeField]
     float readTimedelay = 5f; // x sekund opoznienia // w unity ustawione na 0.1 sekundy 
 
     private float bestScore = 9999; // ze wzgledu na metode SetBestScore ustawiam go na maximum
-    private float currentScore = 0; 
+    private float currentScore = 0;
+
+    private int loopIterator = 0; // do debugowania pokazuje id zapisana do listy 
+
+    public float getWaitTime()
+    {
+        return readTimedelay;
+    }
 
     public void setBestTraceData(List<TraceData>list)
     {
         bestTraceData = new List<TraceData>(list);
+        isBestTraceDataSetted = true;
     }
     public List<TraceData> getBestTraceData()
     {
@@ -51,6 +73,19 @@ public class CarTrace : MonoBehaviour
         carobj = GameObject.Find("Car");
     }
 
+    Rigidbody getCarRigidBody()
+    {
+        try
+        {
+            Rigidbody rb = carobj.GetComponent<Rigidbody>();
+            return rb; 
+        } catch (Exception e)
+        {
+            Debug.LogWarning("[CarTrace]: Samochod nie ma na sobie Rigidbody? \n");
+            return null;
+        }
+    }
+
     private bool CarExists(){
         if (carobj == null)
             return false;
@@ -61,6 +96,7 @@ public class CarTrace : MonoBehaviour
     public void ResetCarTimer()
     {
         carTime = 0;
+        lastTime = 0;
     }
 
     public float GetCarTime()
@@ -70,7 +106,7 @@ public class CarTrace : MonoBehaviour
 
     public void DebugShowCarTime()
     {
-        print("CarTime: " + carTime);
+        print("CarTime: " + carTime*1.01 + " Timer time: " + Timer.GetTime());
     }
 
     private bool checkTimeAndDelay(float timerTime, float carTime){
@@ -80,20 +116,39 @@ public class CarTrace : MonoBehaviour
         return false;
     }
 
+    private IEnumerator ReadTraceCorutine()
+    {
+        while (true)
+        {
+            carTime = (float)Math.Round(carTime, 2);
+            carTime += 0.010f;//(float) Math.Round(readTimedelay,2);
+            CarGetTraceTime();
+            yield return new WaitForSeconds(0.010f); //readTimedelay
+        }
+    }
+
     private void CarGetTraceTime(){
-        float currentTime = Timer.GetTime();
-        bool timeToReadTimer = checkTimeAndDelay(currentTime, carTime);
+        //float currentTime = Timer.GetTime();
+        //bool timeToReadTimer = checkTimeAndDelay(currentTime, carTime);
+        float currentTime = carTime;
+        bool timeToReadTimer = checkTimeAndDelay(carTime,lastTime);
 
         if (timeToReadTimer){
 
-            carTime = currentTime;    
+            lastTime = carTime;
+            //carTime = currentTime;    
             
             if (CarExists()){
                 Vector3 pos = carobj.transform.position;
                 Quaternion rot = carobj.transform.rotation;
-                print("[CarTrace] pos: " + pos + " time" + carTime);
-                TraceData tracedata = new TraceData(pos, carTime,rot);
+                Vector3 velocity = carRigidBody.velocity;
+                Vector3 rotationVelocity = carRigidBody.angularVelocity;
+                   
+                if (showCarTraceDataFlow) print("pozycja nr:" + loopIterator + "[CarTrace] pos: " + pos + " carTime " + carTime + " rot: " + rot + " veolocity: "+velocity + " predkosc katowa rotacji: "+ rotationVelocity);
+                if (showCarTimeAndTimerTime) DebugShowCarTime();
+                TraceData tracedata = new TraceData(pos, carTime,rot,velocity,rotationVelocity);
                 traceData.Add(tracedata);
+                loopIterator += 1;
             }
         }
     }
@@ -108,6 +163,8 @@ public class CarTrace : MonoBehaviour
     void Start(){
         traceData = new List<TraceData>();
         FindCarOject();
+        carRigidBody = getCarRigidBody();
+        StartCoroutine(ReadTraceCorutine());
     }
 
     public void ClearCarTrace()
@@ -115,9 +172,11 @@ public class CarTrace : MonoBehaviour
         traceData.Clear();
     }
 
+    
+
     // Update is called once per frame
-    void Update(){
-        CarGetTraceTime();
+    void FixedUpdate(){
+        
         //print("------------------czas auta playera------------------------\n");
         //string s = "";
         //foreach (TraceData obj in traceData)

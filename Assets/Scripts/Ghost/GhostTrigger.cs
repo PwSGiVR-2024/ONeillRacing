@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /* GhostTriger
@@ -16,12 +17,19 @@ public class GhostTrigger : MonoBehaviour
     Ghost ghost;
     GameObject player;
     bool isPlayer = false;
-    bool isGhost = false; 
+    bool isGhost = false;
+    
     CarTrace playerTrace;
     public GameObject ghostGameObject; 
 
     [SerializeField]
     public GameObject myPrefab;
+
+    [SerializeField]
+    bool logTraceInfo;
+
+    //[SerializeField]
+    //public bool useTeleprot;
 
     void tryGetPlayer()
     {
@@ -79,10 +87,6 @@ public class GhostTrigger : MonoBehaviour
 
             List<TraceData> traceDataForGhost = playerTrace.GetTraceData();
 
-            ghostGameObject = Instantiate(myPrefab, player.GetComponent<Transform>().position, Quaternion.identity);
-            
-            Ghost ghost = ghostGameObject.GetComponent<Ghost>();
-
             float timeScore = playerTrace.GetCarTime();
             playerTrace.SetScore(timeScore);
             
@@ -93,7 +97,33 @@ public class GhostTrigger : MonoBehaviour
                 playerTrace.setBestTraceData(traceDataForGhost);
             }
 
-            ghost.setData(playerTrace.getBestTraceData()); // ghost odzwierciedla tylko najlepsza trase
+            List<TraceData> bestTrace = playerTrace.getBestTraceData();
+
+            Vector3 spawnLocation = bestTrace.First().place;  // wczesniej player.GetComponent<Transform>().position
+            Quaternion spawnRotation = bestTrace.First().roatation; // wczescniej Quaternion.identity
+
+
+            ghostGameObject = Instantiate(myPrefab, spawnLocation , spawnRotation);
+
+            Ghost ghost = ghostGameObject.GetComponent<Ghost>();
+
+            ghost.setData(bestTrace); // ghost odzwierciedla tylko najlepsza trase
+
+            if (logTraceInfo) ghost.showGhostTraceInfo = true;
+
+            ghost.setWaitTime(playerTrace.getWaitTime());
+
+            //if (useTeleprot)
+            //{
+            //    ghost.useTeleprot = true;
+            //    ghost.useMoveForwardFcn = false;
+            //}
+            //else
+            //{
+            //    ghost.useTeleprot = false;
+            //    ghost.useMoveForwardFcn = true;
+            //}
+                
 
             playerTrace.ClearCarTrace();
             Timer.ResetTimer();

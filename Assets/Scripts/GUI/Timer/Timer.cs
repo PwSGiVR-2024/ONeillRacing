@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using System;
 
 public class Timer : MonoBehaviour
 {
@@ -39,7 +40,8 @@ public class Timer : MonoBehaviour
     }
 
     public static float GetTime(){
-        return time;
+        //return time;
+        return (float) Math.Round(time,2);
         //return Mathf.Round(time * 10f) / 10f; // Zaokr¹gla do jednego miejsca po przecinku;
     }
 }
