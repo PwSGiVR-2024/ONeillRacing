@@ -5,20 +5,35 @@ using UnityEngine;
 
 public class GForceDisplay : MonoBehaviour
 {
-    [SerializeField]
-    Gravity gravityScript;
+    
+    Rigidbody carRigidbody;
+    float timeSinceContact = 100;
+    float maxTimeSinceContact = 1f;
 
+    [SerializeField]
     TMP_Text textMesh;
 
     private void Start()
     {
-        textMesh = GetComponent<TMP_Text>();
-        textMesh.text = "a";
+        textMesh.text = "0g";
+        carRigidbody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        textMesh.text = gravityScript.GetGForce(100,10).ToString()+"g";
+        if (timeSinceContact > maxTimeSinceContact)
+        {
+            textMesh.text = "0g";
+        } else {
+            textMesh.text = (Mathf.Round(100 * (1 - (timeSinceContact / maxTimeSinceContact)) * (carRigidbody.GetAccumulatedForce().magnitude / carRigidbody.mass) / 9.807f) / 100).ToString() + "g";
+            timeSinceContact += Time.fixedDeltaTime;
+            print(carRigidbody.GetAccumulatedForce());
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        timeSinceContact = 0;
     }
 }

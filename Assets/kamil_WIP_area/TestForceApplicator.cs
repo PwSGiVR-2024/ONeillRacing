@@ -14,13 +14,15 @@ public class TestForceApplicator : MonoBehaviour
     [SerializeField]
     bool zeroTangentialVelocity;
 
+    Rigidbody myRigidbody;
+    Transform myTransform;
+
     private void Start()
     {
+        myRigidbody = GetComponent<Rigidbody>();
+        myTransform = GetComponent<Transform>();
         if (zeroTangentialVelocity)
         {
-            //canibalized code
-            Transform myTransform = GetComponent<Transform>();
-            Rigidbody myRigidbody = myTransform.GetComponent<Rigidbody>();
             Vector3 offcenterPosition = myTransform.position;
             offcenterPosition.x = 0;
             Vector3 offcenterVelocity = myRigidbody.velocity;
@@ -31,16 +33,17 @@ public class TestForceApplicator : MonoBehaviour
     }
     void FixedUpdate()
     {
+        Vector3 offcenterPosition = myTransform.position;
+        offcenterPosition.x = 0;
         if (Input.GetKey(KeyCode.W)) { 
             GetComponent<Rigidbody>().AddForce(GetComponent<Transform>().forward*forceConstant);
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Transform myTransform = GetComponent<Transform>();
-            Rigidbody myRigidbody = myTransform.GetComponent<Rigidbody>();
-            Vector3 offcenterPosition = myTransform.position;
-            offcenterPosition.x = 0;
             GetComponent<Rigidbody>().AddForce(offcenterPosition.normalized*-1*forceInstant);
+        }
+        if (Input.GetKey(KeyCode.X)) {
+            myRigidbody.velocity += offcenterPosition.normalized * Time.fixedDeltaTime;
         }
     }
 }
