@@ -11,8 +11,14 @@ public class Timer : MonoBehaviour
     Finnish finnish;
 
     private void Start() {
-        finnish = GameObject.FindGameObjectWithTag("Finnish").GetComponent<Finnish>();
-        finnish.finnishedEvent += ChangeTimer;
+        try
+        {
+            finnish = GameObject.FindGameObjectWithTag("Finnish").GetComponent<Finnish>();
+            finnish.finnishedEvent += ChangeTimer;
+        }
+        catch (Exception e){
+            Debug.LogWarning($"[Timer.cs -> Start() ] na scenie nie ma obiektu z komponentem <Finish> \n Blad ->> {e}");
+        }
     }
 
     private void Update() {

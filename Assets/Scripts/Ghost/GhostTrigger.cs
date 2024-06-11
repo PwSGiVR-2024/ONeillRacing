@@ -14,7 +14,7 @@ using UnityEngine;
 public class GhostTrigger : MonoBehaviour
 {
 
-    Ghost ghost;
+    //Ghost ghost;
     GameObject player;
     bool isPlayer = false;
     bool isGhost = false;
@@ -23,7 +23,7 @@ public class GhostTrigger : MonoBehaviour
     public GameObject ghostGameObject; 
 
     [SerializeField]
-    public GameObject myPrefab;
+    public GameObject myPrefab; // ghost car prefab
 
     [SerializeField]
     bool logTraceInfo;
@@ -35,26 +35,26 @@ public class GhostTrigger : MonoBehaviour
     {
         try
         {
-            player = GameObject.Find("Car"); //GameObject.FindGameObjectWithTag("Player");
+            player = GameObject.FindGameObjectWithTag("Player"); //GameObject.FindGameObjectWithTag("Player");
             isPlayer = true;
         } catch (Exception e)
         {
-            print("[GhostTrigger]: Nie moge sie dostaæ do objektu o tagu Player");
+            print($"[GhostTrigger]: Nie moge sie dostaæ do objektu o tagu Player \n {e}");
         }
     }
 
-    void tryGetGhost()
-    {
-        try
-        {
-            ghost = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Ghost>();
-            isGhost = true;
-        }
-        catch (Exception e)
-        {
-            print("[GhostTrigger]: Nie moge sie dostaæ do objektu o tagu Player");
-        }
-    }
+    //void tryGetGhost()
+    //{
+    //    try
+    //    {
+    //        ghost = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Ghost>();
+    //        isGhost = true;
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        print("[GhostTrigger]: Nie moge sie dostaæ do objektu o tagu Ghost");
+    //    }
+    //}
 
     CarTrace tryGetPlayerTrace()
     {
@@ -65,6 +65,7 @@ public class GhostTrigger : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogWarning($"[GhostTrigger.cs -> tryGetPlayerTrace() ] Samochód nie ma komponentu CarTrace na œobie!\n{e}");
             return null;
         }
     }
@@ -102,8 +103,15 @@ public class GhostTrigger : MonoBehaviour
             Vector3 spawnLocation = bestTrace.First().place;  // wczesniej player.GetComponent<Transform>().position
             Quaternion spawnRotation = bestTrace.First().roatation; // wczescniej Quaternion.identity
 
-
-            ghostGameObject = Instantiate(myPrefab, spawnLocation , spawnRotation);
+            try
+            {
+                ghostGameObject = Instantiate(myPrefab, spawnLocation, spawnRotation);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[GhosTrigger.cs -> spawnGhost() ] Nie moge zainstancjonowaæ prefabu Ghosta, moze nie jest ustawiony?\n{e}");
+                StopCoroutine(spawnGhost(colider));
+            }
 
             Ghost ghost = ghostGameObject.GetComponent<Ghost>();
 
@@ -149,7 +157,7 @@ public class GhostTrigger : MonoBehaviour
     void Start()
     {
         tryGetPlayer();
-        tryGetGhost();
+        //tryGetGhost();
     }
 
     // Update is called once per frame

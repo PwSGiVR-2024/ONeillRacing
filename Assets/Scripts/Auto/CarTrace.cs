@@ -70,7 +70,7 @@ public class CarTrace : MonoBehaviour
     }
 
     private void FindCarOject(){
-        carobj = GameObject.Find("Car");
+        carobj = GameObject.FindGameObjectWithTag("Player");
     }
 
     Rigidbody getCarRigidBody()
@@ -81,7 +81,7 @@ public class CarTrace : MonoBehaviour
             return rb; 
         } catch (Exception e)
         {
-            Debug.LogWarning("[CarTrace]: Samochod nie ma na sobie Rigidbody? \n");
+            Debug.LogWarning($"[CarTrace]: Samochod nie ma na sobie Rigidbody? \n {e}");
             return null;
         }
     }
