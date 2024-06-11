@@ -23,7 +23,7 @@ public class MainMenu : MonoBehaviour
     }
 
     public void ExitGame() {
-
+        Application.Quit();
     }
 
     // Options Menu
@@ -31,6 +31,5 @@ public class MainMenu : MonoBehaviour
         cameraDelegate(0);
         MenuOptions.SetActive(true);
         AudioOptions.SetActive(false);
-
     }
 }
