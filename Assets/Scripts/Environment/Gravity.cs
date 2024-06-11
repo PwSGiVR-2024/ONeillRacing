@@ -10,9 +10,7 @@ public class Gravity : MonoBehaviour
     Vector3 offcenterPosition;
     Vector3 offcenterVelocity;
     float objectMass = 1f;
-
-    [SerializeField]
-    float scaleForces = 1;
+    Vector3 centrifugalAcceleration = Vector3.zero;
 
     float previousAxisDistance;
 
@@ -29,7 +27,8 @@ public class Gravity : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        myRigidbody.AddForce(objectMass * FakeCentrifugalAcceleration() * scaleForces);//applies centrifugal force calculated as if the cylinder was rotating
+        centrifugalAcceleration = FakeCentrifugalAcceleration();
+        myRigidbody.AddForce(objectMass * centrifugalAcceleration);//applies centrifugal force calculated as if the cylinder was rotating
         RotateVelocity();//velocity vector is rotated oposite to rotation of the cylinder, causing the direction of movement change as if it was actually moving in a straight line with the cylinder rotating around it instead
         MaintainTengentialVelocity();//changes velocity of a body moving in a "straight line" so that it does not veer off to the sides - ie. makes it veer off to the side when you assume cylinder is static
     }
@@ -84,7 +83,7 @@ public class Gravity : MonoBehaviour
         {
             force = staticTangentialVelocity * approachSpeed / -DistanceFromRotAxis();
         }
-        myRigidbody.AddForce(force*myRigidbody.mass* scaleForces);
+        myRigidbody.AddForce(force*myRigidbody.mass);
         previousAxisDistance = DistanceFromRotAxis();
     }
 
@@ -110,5 +109,9 @@ public class Gravity : MonoBehaviour
         Vector3 centrifugalForce = VectorFromRotAxis() * fakeAngularVelocity * fakeAngularVelocity;
 
         return centrifugalForce;
+    }
+
+    public Vector3 GetCentrifugalAcceleration() {
+        return centrifugalAcceleration;
     }
 }

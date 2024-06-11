@@ -6,9 +6,12 @@ using UnityEngine;
 public class GForceDisplay : MonoBehaviour
 {
     
-    Rigidbody carRigidbody;
+    Gravity carGravity;
     float timeSinceContact = 100;
     float maxTimeSinceContact = 1f;
+    float gForce = 0;
+    [SerializeField]
+    float minGForce = 0.29f;
 
     [SerializeField]
     TMP_Text textMesh;
@@ -16,7 +19,7 @@ public class GForceDisplay : MonoBehaviour
     private void Start()
     {
         textMesh.text = "0g";
-        carRigidbody = GetComponent<Rigidbody>();
+        carGravity = GetComponent<Gravity>();
     }
 
     // Update is called once per frame
@@ -26,9 +29,9 @@ public class GForceDisplay : MonoBehaviour
         {
             textMesh.text = "0g";
         } else {
-            textMesh.text = (Mathf.Round(100 * (1 - (timeSinceContact / maxTimeSinceContact)) * (carRigidbody.GetAccumulatedForce().magnitude / carRigidbody.mass) / 9.807f) / 100).ToString() + "g";
+            gForce = carGravity.GetCentrifugalAcceleration().magnitude / 9.807f;
+            textMesh.text = (Mathf.Round(100 * (1 - (timeSinceContact / maxTimeSinceContact)) * gForce ) / 100).ToString() + "g";
             timeSinceContact += Time.fixedDeltaTime;
-            print(carRigidbody.GetAccumulatedForce());
         }
     }
 
