@@ -3,22 +3,29 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] SoundManager SfxManager;
+    [SerializeField] SoundManager sfxManager;
     [SerializeField] Finnish finnish;
-    [SerializeField] GameObject[] UIElements;
+    [SerializeField] StartCounter startCounter;
+    [SerializeField][Tooltip("Add GUI and pause menu kits. It should be two of them.")] GameObject[] uiElements;
 
     private bool _paused = false;
+    private bool _started = false;
     private bool _finnished = false;
 
     private void Awake() {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        startCounter.AStart += StartListener;
         finnish.AFinnish += FinnishListener;
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape) && !_finnished) 
+        if (Input.GetKeyDown(KeyCode.Escape) && !_finnished && _started) 
             ChangeUIElements();
+    }
+
+    private void StartListener() {
+        _started = true;
     }
 
     private void FinnishListener() {
@@ -27,22 +34,32 @@ public class UIManager : MonoBehaviour
 
     // Publics
     public void ChangeUIElements() {
+        AudioSource[] audioSources = FindObjectsOfType<AudioSource>();
+
         if (!_paused) {
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            foreach (AudioSource source in audioSources)
+                source.Pause();
+
+            sfxManager.LoadAndPlaySound("PauseOn");
         }
         else {
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            foreach (AudioSource source in audioSources)
+                source.Play();
+
+            sfxManager.LoadAndPlaySound("PauseOff");
         }
+        foreach (var element in uiElements)
+            element.SetActive(!element.activeSelf);
 
         _paused = !_paused;
-        SfxManager.LoadAndPlaySound("EnginePedal");
-
-        foreach (var element in UIElements)
-            element.SetActive(!element.activeSelf);
     }
 
     public void BackToMenu() {

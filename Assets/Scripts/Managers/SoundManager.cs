@@ -1,10 +1,14 @@
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour {
-    [SerializeField] AudioSource Sfx;
+    AudioSource sfx;
+
+    private void Start() {
+        sfx = GetComponent<AudioSource>();
+    }
 
     public void LoadAndPlaySound(string filename) {
         AudioClip clip = Resources.Load<AudioClip>($"Audio/Sounds/{filename}");
-        Sfx.PlayOneShot(clip);
+        sfx.PlayOneShot(clip);
     }
 }

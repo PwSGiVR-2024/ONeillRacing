@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] GameObject MenuOptions;
-    [SerializeField] GameObject AudioOptions;
+    [SerializeField] GameObject menuOptions;
+    [SerializeField] GameObject AudioOptionsa;
     public delegate void CameraDelegate(int cameraID);
     public CameraDelegate cameraDelegate;
 
@@ -18,8 +18,8 @@ public class MainMenu : MonoBehaviour
 
     public void Options() {
         cameraDelegate(2);
-        MenuOptions.SetActive(false);
-        AudioOptions.SetActive(true);
+        menuOptions.SetActive(false);
+        AudioOptionsa.SetActive(true);
     }
 
     public void ExitGame() {
@@ -29,7 +29,7 @@ public class MainMenu : MonoBehaviour
     // Options Menu
     public void BackToMain() {
         cameraDelegate(0);
-        MenuOptions.SetActive(true);
-        AudioOptions.SetActive(false);
+        menuOptions.SetActive(true);
+        AudioOptionsa.SetActive(false);
     }
 }

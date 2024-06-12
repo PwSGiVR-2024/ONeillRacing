@@ -5,8 +5,8 @@ public class Finnish : MonoBehaviour
 {
     public event Action AFinnish;
 
-    [SerializeField] GameObject CarCamera;
-    [SerializeField] GameObject FinnishCamera;
+    [SerializeField] GameObject carCamera;
+    [SerializeField] GameObject finnishCamera;
 
     public event Action finnishedEvent;
 
@@ -14,8 +14,8 @@ public class Finnish : MonoBehaviour
         if (other.CompareTag("Player")) {
             AFinnish();
             GameObject.Find("AudioManager").GetComponent<SoundManager>().LoadAndPlaySound("Finnish");
-            FinnishCamera.SetActive(true);
-            CarCamera.SetActive(false);
+            finnishCamera.SetActive(true);
+            carCamera.SetActive(false);
             finnishedEvent();
             Destroy(gameObject);
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Channel : MonoBehaviour
 {
-    [SerializeField] private AudioClip[] clip;
+    [SerializeField] AudioClip[] clip;
     private AudioSource _bgm;
     private float _clipLength;
     private int _clipIndex = 0;
@@ -24,7 +24,6 @@ public class Channel : MonoBehaviour
     private void PlayNextClip() {
         _bgm.clip = clip[_clipIndex];
         _clipLength = _bgm.clip.length;
-        print(gameObject.name + " clip length: " + _clipLength);
         _bgm.Play();
         _clipIndex++;
         if (_clipIndex >= clip.Length)
