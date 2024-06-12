@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class Radio : MonoBehaviour
 {
-    [SerializeField] private AudioSource[] channelSource;
-    [SerializeField] private GameObject[] channelName;
-    [SerializeField] private float _nameShowTime;
+    [SerializeField] AudioSource[] channelSource;
+    [SerializeField] GameObject[] channelName;
+    [SerializeField] float _nameShowTime;
     private int _channel = 4;
 
     private void Start() {
