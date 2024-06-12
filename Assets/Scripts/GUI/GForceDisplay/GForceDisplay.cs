@@ -71,8 +71,6 @@ public class GForceDisplay : MonoBehaviour
 
         vignette.intensity.Override(accumulatedGLoc);
         colorGrading.saturation.Override(-accumulatedGLoc*100);
-
-        print(accumulatedGLoc);
     }
 
     private void OnTriggerStay(Collider other)
