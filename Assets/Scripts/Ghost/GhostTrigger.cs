@@ -150,7 +150,10 @@ public class GhostTrigger : MonoBehaviour
 
     public void OnTriggerExit(Collider colider)
     {
-        StartCoroutine(spawnGhost(colider));
+        if (colider.CompareTag("Player"))
+        {
+            StartCoroutine(spawnGhost(colider));
+        }
     }
 
     // Start is called before the first frame update
