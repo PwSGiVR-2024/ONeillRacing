@@ -1,11 +1,19 @@
+using Cinemachine;
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] GameObject menuOptions;
-    [SerializeField] GameObject AudioOptionsa;
+    [SerializeField] GameObject[] segments;
+    [SerializeField] CinemachineBrain brain;
+
     public delegate void CameraDelegate(int cameraID);
     public CameraDelegate cameraDelegate;
+    public event Action ALeaderOn;
+    public event Action ALeaderOff;
+
+    private int _coroutineCam;
 
     // Main Menu
     public void NewGame() {
@@ -13,13 +21,17 @@ public class MainMenu : MonoBehaviour
     }
 
     public void Leadreboard() {
+        segments[0].SetActive(false);
+        brain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.EaseIn;
+        _coroutineCam = 2;
         cameraDelegate(1);
+        StartCoroutine(nameof(NextCameraDelay));
     }
 
     public void Options() {
-        cameraDelegate(2);
-        menuOptions.SetActive(false);
-        AudioOptionsa.SetActive(true);
+        cameraDelegate(3);
+        segments[0].SetActive(false);
+        segments[1].SetActive(true);
     }
 
     public void ExitGame() {
@@ -29,7 +41,26 @@ public class MainMenu : MonoBehaviour
     // Options Menu
     public void BackToMain() {
         cameraDelegate(0);
-        menuOptions.SetActive(true);
-        AudioOptionsa.SetActive(false);
+        segments[0].SetActive(true);
+        segments[1].SetActive(false);
+    }
+
+    public void CloseLeaderboard() {
+        segments[2].SetActive(false);
+        brain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.EaseIn;
+        _coroutineCam = 0;
+        cameraDelegate(1);
+        StartCoroutine(nameof(NextCameraDelay));
+        ALeaderOff();
+    }
+
+    private IEnumerator NextCameraDelay() {
+        yield return new WaitForSeconds(1);
+        brain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.EaseOut;
+        cameraDelegate(_coroutineCam);
+        yield return new WaitForSeconds(1);
+        brain.m_DefaultBlend.m_Style = CinemachineBlendDefinition.Style.EaseInOut;
+        if (_coroutineCam == 2) ALeaderOn();
+        if (_coroutineCam == 0) segments[0].SetActive(true);
     }
 }
