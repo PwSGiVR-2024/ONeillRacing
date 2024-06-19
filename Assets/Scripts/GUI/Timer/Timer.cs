@@ -6,19 +6,26 @@ public class Timer : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerTxt;
     static float time = 0.0f;
-    bool timerOn = true;
+    bool timerOn = false;
 
+    StartCounter counter;
     Finnish finnish;
 
     private void Start() {
         try
         {
+            counter = GameObject.FindGameObjectWithTag("StartCounter").GetComponent<StartCounter>();
             finnish = GameObject.FindGameObjectWithTag("Finnish").GetComponent<Finnish>();
+            counter.AStart += ChangeTimer;
             finnish.finnishedEvent += ChangeTimer;
         }
         catch (Exception e){
             Debug.LogWarning($"[Timer.cs -> Start() ] na scenie nie ma obiektu z komponentem <Finish> \n Blad ->> {e}");
         }
+    }
+
+    private void Counter_AStart() {
+        throw new NotImplementedException();
     }
 
     private void Update() {
@@ -28,7 +35,7 @@ public class Timer : MonoBehaviour
         }
     }
 
-    void UpdateTimer(float currentTime) {
+    private void UpdateTimer(float currentTime) {
         currentTime += 1;
         float minutes = Mathf.FloorToInt(currentTime / 60);
         float seconds = Mathf.FloorToInt(currentTime % 60);
@@ -36,7 +43,7 @@ public class Timer : MonoBehaviour
         timerTxt.text = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, centy);
     }
 
-    void ChangeTimer() {
+    private void ChangeTimer() {
         timerOn = !timerOn;
     }
 

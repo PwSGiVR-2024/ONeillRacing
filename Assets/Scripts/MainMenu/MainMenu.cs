@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class MainMenu : MonoBehaviour
     // Main Menu
     public void NewGame() {
         blendCameraDelegate(0, CinemachineBlendDefinition.Style.EaseInOut, 1);
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     public void Leadreboard() {
