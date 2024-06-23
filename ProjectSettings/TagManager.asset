@@ -9,6 +9,7 @@ TagManager:
   - Ghost
   - Enemy
   - StartCounter
+  - Radio
   layers:
   - Default
   - TransparentFX

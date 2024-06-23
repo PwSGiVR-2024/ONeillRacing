@@ -11,7 +11,7 @@ public class Finnish : MonoBehaviour
     public event Action finnishedEvent;
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
+        if (other.CompareTag("Player") && Checkpoint.AreAllChecked()) {
             AFinnish();
             GameObject.Find("AudioManager").GetComponent<SoundManager>().LoadAndPlaySound("Finnish");
             finnishCamera.SetActive(true);

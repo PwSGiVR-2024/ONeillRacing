@@ -20,8 +20,9 @@ public class MainMenu : MonoBehaviour
 
     // Main Menu
     public void NewGame() {
-        blendCameraDelegate(0, CinemachineBlendDefinition.Style.EaseInOut, 1);
-        SceneManager.LoadScene(1, LoadSceneMode.Single);
+        blendCameraDelegate(3, CinemachineBlendDefinition.Style.EaseInOut, 1);
+        segments[0].SetActive(false);
+        segments[3].SetActive(true);
     }
 
     public void Leadreboard() {
@@ -45,6 +46,11 @@ public class MainMenu : MonoBehaviour
         blendCameraDelegate(0, CinemachineBlendDefinition.Style.EaseInOut, 1);
         segments[0].SetActive(true);
         segments[1].SetActive(false);
+        segments[3].SetActive(false);
+    }
+
+    public void LoadLevel1() {
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     public void CloseLeaderboard() {

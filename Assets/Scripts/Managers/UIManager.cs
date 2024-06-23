@@ -41,8 +41,10 @@ public class UIManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            foreach (AudioSource source in audioSources)
+            foreach (AudioSource source in audioSources) {
+
                 source.Pause();
+            }
 
             sfxManager.LoadAndPlaySound("PauseOn");
         }
@@ -52,7 +54,8 @@ public class UIManager : MonoBehaviour
             Cursor.visible = false;
 
             foreach (AudioSource source in audioSources)
-                source.Play();
+                if (source.CompareTag("Player") || source.CompareTag("Radio"))
+                    source.Play();
 
             sfxManager.LoadAndPlaySound("PauseOff");
         }
