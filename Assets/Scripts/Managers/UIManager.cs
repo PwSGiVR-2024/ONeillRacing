@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,7 +8,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Finnish finnish;
     [SerializeField] StartCounter startCounter;
     [SerializeField][Tooltip("Add GUI and pause menu kits. It should be two of them.")] GameObject[] uiElements;
-
+    
+    private float _backToMenuDelay = 4.0f;
     private bool _paused = false;
     private bool _started = false;
     private bool _finnished = false;
@@ -30,6 +32,14 @@ public class UIManager : MonoBehaviour
 
     private void FinnishListener() {
         _finnished = true;
+        StartCoroutine(nameof(BackToMainDelay));
+    }
+
+    private IEnumerator BackToMainDelay() {
+        yield return new WaitForSeconds(_backToMenuDelay);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     // Publics
