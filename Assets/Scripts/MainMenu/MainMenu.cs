@@ -53,6 +53,10 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
+    public void LoadLevel2() {
+        SceneManager.LoadScene(2, LoadSceneMode.Single);
+    }
+
     public void CloseLeaderboard() {
         segments[2].SetActive(false);
         _coroutineCam = 0;
