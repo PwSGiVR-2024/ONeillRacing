@@ -18,7 +18,8 @@ public class Ghost : MonoBehaviour
     Transform ghostTransform;
     Rigidbody ghostRigidBody;
 
-    public bool showGhostTraceInfo; 
+    private bool showGhostTraceInfo = false;
+    private bool debugOn = false;
 
     private IEnumerator ghostRiding;
 
@@ -84,7 +85,7 @@ public class Ghost : MonoBehaviour
         float timeFirst = 0;
         float timeNext = 0;
         float waitTime0 = 0;
-        print("[Ghost] rozpoczynam korutyne" + trace);
+        if(debugOn) print("[Ghost] rozpoczynam korutyne" + trace);
         //Timer.ResetTimer();
         foreach(TraceData traceData in trace) {
             timeNext = traceData.time;
@@ -103,7 +104,7 @@ public class Ghost : MonoBehaviour
             float step = V * Time.deltaTime * 1000;
             Vector3 positionExpected = traceData.place;
             Vector3 ghostPosition = gameObject.transform.position;
-            if (showGhostTraceInfo) print("pozycja nr:" + i +  " [Ghost] Roznica czasu " + waitTime + ", step: " + step + "waitime: "+waitTime+" Droga: " + S + " Predkosc " + V +" GhostTime " + ghostTime + " time z cartrace: "+ traceData.time + " pozycja oczekiwana " + positionExpected +" pozycja ghosta " + ghostPosition);
+            if (debugOn) print("pozycja nr:" + i +  " [Ghost] Roznica czasu " + waitTime + ", step: " + step + "waitime: "+waitTime+" Droga: " + S + " Predkosc " + V +" GhostTime " + ghostTime + " time z cartrace: "+ traceData.time + " pozycja oczekiwana " + positionExpected +" pozycja ghosta " + ghostPosition);
             if (useTeleprot) {
                 gameObject.transform.position = traceData.place; // teleportacja
                 gameObject.transform.rotation = traceData.roatation;
@@ -184,7 +185,7 @@ public class Ghost : MonoBehaviour
                 }
                 Vector3 additionalVelocity = new Vector3(newVelocityX,newVelocityY,newVelocityZ);
                 ghostRigidBody.velocity = additionalVelocity;
-                print("[Ghost] : wektor przyspieszenia zostal zmieniony z " + traceData.velocity + " na " + additionalVelocity);
+                if(debugOn) print("[Ghost] : wektor przyspieszenia zostal zmieniony z " + traceData.velocity + " na " + additionalVelocity);
 
             }
 
@@ -196,7 +197,7 @@ public class Ghost : MonoBehaviour
         }
 
         Destroy(gameObject);
-        print("Petla forech z korutyny wykonala sie " + i + " razy");
+        if(debugOn) print("Petla forech z korutyny wykonala sie " + i + " razy");
         //yield return null;
         
     }

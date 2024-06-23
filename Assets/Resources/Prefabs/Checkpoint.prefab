@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 8959965238042665858}
   - component: {fileID: 8848744182394757975}
   - component: {fileID: 4472941638873697611}
+  - component: {fileID: 5096179813711677404}
   m_Layer: 0
   m_Name: Torus
   m_TagString: Untagged
@@ -11829,6 +11830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkedMaterial: {fileID: 2100000, guid: 272a571970165264487cf6009a8bc651, type: 2}
+  ucheckedMaterial: {fileID: 2100000, guid: 58ccab0ce2dda5f4b90bcfff4603e2d3, type: 2}
 --- !u!82 &4472941638873697611
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11925,3 +11927,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5096179813711677404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9144716041511067491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 979851b7624cad541a55644c5f2ffd1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostGameObject: {fileID: 0}
+  myPrefab: {fileID: 7919164785837134600, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
+  logTraceInfo: 0
+  spawnPositionX: -943
+  spawnPositionY: -498.82
+  spawnPositionZ: 0
+  spawnRotationX: 0
+  spawnRotationY: 80
+  spawnRotationZ: 0

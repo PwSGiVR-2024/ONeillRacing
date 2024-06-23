@@ -14,6 +14,9 @@ public class CarTrace : MonoBehaviour
     public List<TraceData> bestTraceData;
     public int rand = 6;
     public bool isBestTraceDataSetted = false;
+    private bool debugOn = false;
+    public int points = 0;
+    public int totalPoints = 0;
 
     Rigidbody carRigidBody; 
 
@@ -66,7 +69,7 @@ public class CarTrace : MonoBehaviour
 
     public void DebugShowScores()
     {
-        print("Score : " + currentScore + " BesScore: " + bestScore);
+        if (debugOn) print("Score : " + currentScore + " BesScore: " + bestScore);
     }
 
     private void FindCarOject(){
@@ -106,7 +109,7 @@ public class CarTrace : MonoBehaviour
 
     public void DebugShowCarTime()
     {
-        print("CarTime: " + carTime*1.01 + " Timer time: " + Timer.GetTime());
+        if (debugOn) print("CarTime: " + carTime*1.01 + " Timer time: " + Timer.GetTime());
     }
 
     private bool checkTimeAndDelay(float timerTime, float carTime){
@@ -155,7 +158,7 @@ public class CarTrace : MonoBehaviour
 
     public List<TraceData> GetTraceData()
     {
-        print("[CarTrace] Robie return traceData");
+        if(debugOn) print("[CarTrace] Robie return traceData");
         return traceData;
     }
 

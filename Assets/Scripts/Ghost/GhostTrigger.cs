@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 
 /* GhostTriger
@@ -27,6 +28,28 @@ public class GhostTrigger : MonoBehaviour
 
     [SerializeField]
     bool logTraceInfo;
+
+    private int totalPoints;
+    private bool debugOn = false;
+    Checkpoint[] checkpoitns;
+
+    [SerializeField]
+    float spawnPositionX = 0;
+    [SerializeField]
+    float spawnPositionY = 0;
+    [SerializeField]
+    float spawnPositionZ = 0;
+
+    [SerializeField]
+    float spawnRotationX = 0;
+    [SerializeField]
+    float spawnRotationY = 0;
+    [SerializeField]
+    float spawnRotationZ = 0;
+
+    Vector3 spawnPosition0;
+    Quaternion spawnRotation0; 
+
 
     //[SerializeField]
     //public bool useTeleprot;
@@ -74,7 +97,7 @@ public class GhostTrigger : MonoBehaviour
     {
         print(colider.gameObject.tag + " " + colider.name);
 
-        if (colider.CompareTag("Player")) //colider.gameObject.tag == "Player"
+        if (colider.CompareTag("Player") || colider.name == "GravityCar") //colider.gameObject.tag == "Player"
         {
             if (isPlayer) // TODO zrobic to w try catch 
             {
@@ -85,6 +108,16 @@ public class GhostTrigger : MonoBehaviour
                     StopCoroutine(spawnGhost(colider));
                 }
             }
+
+            int playerPoints = playerTrace.points;
+
+            //if (debugOn) print($"Mam {playerPoints} / {totalPoints} punktow");
+
+            //if (playerPoints != totalPoints)
+            //{
+            //    StopCoroutine(spawnGhost(colider));
+            //    yield return null;
+            //}
 
             List<TraceData> traceDataForGhost = playerTrace.GetTraceData();
 
@@ -105,19 +138,23 @@ public class GhostTrigger : MonoBehaviour
 
             try
             {
-                ghostGameObject = Instantiate(myPrefab, spawnLocation, spawnRotation);
+                ghostGameObject = Instantiate(myPrefab, spawnPosition0, spawnRotation0);
             }
             catch (Exception e)
             {
                 Debug.LogWarning($"[GhosTrigger.cs -> spawnGhost() ] Nie moge zainstancjonowaæ prefabu Ghosta, moze nie jest ustawiony?\n{e}");
                 StopCoroutine(spawnGhost(colider));
             }
+            // spawnLocation spawnRotation
+            
+            colider.transform.position = spawnPosition0; // jak sie uda zaladowac obiekt ducha to gracza teleportuje z powrotem do bazy i razem z duchem zaczyna wyscig ponownie
+            colider.transform.rotation = spawnRotation0;
 
             Ghost ghost = ghostGameObject.GetComponent<Ghost>();
 
             ghost.setData(bestTrace); // ghost odzwierciedla tylko najlepsza trase
 
-            if (logTraceInfo) ghost.showGhostTraceInfo = true;
+            //if (logTraceInfo) ghost.showGhostTraceInfo = true;
 
             ghost.setWaitTime(playerTrace.getWaitTime());
 
@@ -143,20 +180,91 @@ public class GhostTrigger : MonoBehaviour
         }
         else
         {
-            print("[GhostTrigger]: Nie widze colidera");
+            Debug.LogWarning("[GhostTrigger]: Nie widze colidera");
         }
         yield return null;
     }
 
+
+    public void getQuantityOfCheckpoints()
+    {
+        try
+        {
+            checkpoitns = GameObject.FindObjectsOfType<Checkpoint>();
+            totalPoints = checkpoitns.Length;
+            if (debugOn) print($"Wczytane pointy {totalPoints}");
+        } catch (Exception e)
+        {
+            Debug.LogError("[GhostTrigger] nie moge odczytac ilosci checkpointow ze sceny");
+            totalPoints = 999;
+        }
+    }
     public void OnTriggerExit(Collider colider)
     {
-        StartCoroutine(spawnGhost(colider));
+        if (colider.CompareTag("Player"))
+        {
+            try
+            {
+                CarTrace carTrace = colider.GetComponent<CarTrace>();
+                int playerPoints = carTrace.points;
+                
+                if (playerPoints  == totalPoints)
+                {
+                    uncheckAllCheckpoints();
+                    carTrace.points = 0; // od nowa bedziemy zbierac punkty
+                    StartCoroutine(spawnGhost(colider));
+                    Rigidbody rb = colider.GetComponent<Rigidbody>();
+                    rb.velocity = new Vector3(0, 0, 0);
+
+                } // jednak dodawanie punktow dam do checkpointa to wtedy on wie np. gracz juz przez niego przejechal
+                //else
+               // {
+                   // carTrace.points += 1; // przejechanie pod slupkiem to +1 
+                //}
+                if (debugOn) print($"Mam {playerPoints} / {totalPoints} punktow");
+
+            } catch (Exception e)
+            {
+                Debug.LogWarning("[GhostTrigger] Nie moglem odczytac CarTrace z komponentu gracza");
+            }
+
+        }
+        
+    }
+
+    private void setSpawnPosition()
+    {
+        spawnPosition0 = new Vector3(spawnPositionX,spawnPositionY,spawnPositionZ);
+    }
+    private void setSpawnRotation()
+    {
+        spawnRotation0 = new Quaternion(spawnRotationX, spawnRotationY, spawnRotationZ,0);
+    }
+
+    private void uncheckAllCheckpoints() {
+        if (checkpoitns == null)
+            return;
+        try
+        {
+            Checkpoint.setUncheckedCheckpointsToValue(totalPoints); // od nowa maksymalna liczba checkpointow do przejechania
+            foreach(Checkpoint checkpoint in checkpoitns)
+            {
+                checkpoint.setChecked(false);
+                checkpoint.resetMeshToGreen();
+            } 
+        } catch (Exception e)
+        {
+            Debug.LogWarning($"[GhostTrigger] cos poszlo nie tak : {e}");
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
         tryGetPlayer();
+        getQuantityOfCheckpoints();
+        setSpawnPosition();
+        setSpawnRotation();
         //tryGetGhost();
     }
 

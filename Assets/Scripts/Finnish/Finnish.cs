@@ -14,8 +14,8 @@ public class Finnish : MonoBehaviour
         if (other.CompareTag("Player") && Checkpoint.AreAllChecked()) {
             AFinnish();
             GameObject.Find("AudioManager").GetComponent<SoundManager>().LoadAndPlaySound("Finnish");
-            finnishCamera.SetActive(true);
-            carCamera.SetActive(false);
+            //finnishCamera.SetActive(true);
+            //carCamera.SetActive(false);
             finnishedEvent();
             Destroy(gameObject);
         }

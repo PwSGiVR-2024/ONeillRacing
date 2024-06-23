@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour
 
     private void FinnishListener() {
         _finnished = true;
-        StartCoroutine(nameof(BackToMainDelay));
+        //StartCoroutine(nameof(BackToMainDelay));
     }
 
     private IEnumerator BackToMainDelay() {
