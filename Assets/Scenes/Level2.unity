@@ -1980,7 +1980,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8792966702174947715, guid: c4a8889044c08cf4b93c86cf7141040e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -493.56
+      value: -516.7
       objectReference: {fileID: 0}
     - target: {fileID: 8792966702174947715, guid: c4a8889044c08cf4b93c86cf7141040e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6003,7 +6003,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3335823827719051374, guid: 0c0bd2f13ec0a71439401b81eea15fc7, type: 3}
       propertyPath: m_Intensity
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4646531007223604318, guid: 0c0bd2f13ec0a71439401b81eea15fc7, type: 3}
       propertyPath: textMesh
@@ -6071,7 +6071,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6668974283155427493, guid: 0c0bd2f13ec0a71439401b81eea15fc7, type: 3}
       propertyPath: m_Intensity
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8835870140204805494, guid: 0c0bd2f13ec0a71439401b81eea15fc7, type: 3}
       propertyPath: m_Enabled
