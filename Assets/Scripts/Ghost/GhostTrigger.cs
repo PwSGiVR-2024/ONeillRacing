@@ -148,7 +148,9 @@ public class GhostTrigger : MonoBehaviour
             // spawnLocation spawnRotation
             
             colider.transform.position = spawnPosition0; // jak sie uda zaladowac obiekt ducha to gracza teleportuje z powrotem do bazy i razem z duchem zaczyna wyscig ponownie
-            colider.transform.rotation = spawnRotation0;
+            //colider.transform.rotation = spawnRotation0;
+            colider.transform.rotation = Quaternion.Euler(0,90,0);
+            colider.GetComponent<Rigidbody>().velocity = Vector3.zero;
 
             Ghost ghost = ghostGameObject.GetComponent<Ghost>();
 
