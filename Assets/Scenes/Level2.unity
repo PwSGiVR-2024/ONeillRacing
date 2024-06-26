@@ -1972,7 +1972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7720247000052458119, guid: c4a8889044c08cf4b93c86cf7141040e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8792966702174947715, guid: c4a8889044c08cf4b93c86cf7141040e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10372,7 +10372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 979851b7624cad541a55644c5f2ffd1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ghostGameObject: {fileID: 0}
   myPrefab: {fileID: 7919164785837134600, guid: 0ec86bd2b9a33864187b91e8c6a328ce, type: 3}
   logTraceInfo: 0
   spawnPositionX: -943

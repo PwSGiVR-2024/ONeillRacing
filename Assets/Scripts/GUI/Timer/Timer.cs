@@ -15,9 +15,9 @@ public class Timer : MonoBehaviour
         try
         {
             counter = GameObject.FindGameObjectWithTag("StartCounter").GetComponent<StartCounter>();
-            finnish = GameObject.FindGameObjectWithTag("Finnish").GetComponent<Finnish>();
+            //finnish = GameObject.FindGameObjectWithTag("Finnish").GetComponent<Finnish>();
             counter.AStart += ChangeTimer;
-            finnish.finnishedEvent += ChangeTimer;
+            //finnish.finnishedEvent += ChangeTimer;
         }
         catch (Exception e){
             Debug.LogWarning($"[Timer.cs -> Start() ] na scenie nie ma obiektu z komponentem <Finish> \n Blad ->> {e}");

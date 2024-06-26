@@ -5,18 +5,16 @@ using UnityEngine;
 //using UnityEngine.Rendering;
 //using UnityEngine.SocialPlatforms.Impl;
 using System;
+using UnityStandardAssets.Cameras;
 //using UnityEngine.UIElements;
 //using UnityEngine.Experimental.AI;
 
 public class CarTrace : MonoBehaviour
 {
-    public List<TraceData> traceData;
-    public List<TraceData> bestTraceData;
-    public int rand = 6;
-    public bool isBestTraceDataSetted = false;
+    private List<TraceData> traceData;
+    private List<TraceData> bestTraceData;
     private bool debugOn = false;
-    public int points = 0;
-    public int totalPoints = 0;
+    private int points = 0;
 
     Rigidbody carRigidBody; 
 
@@ -38,6 +36,19 @@ public class CarTrace : MonoBehaviour
 
     private int loopIterator = 0; // do debugowania pokazuje id zapisana do listy 
 
+    public int getPoints()
+    {
+        return points;
+    }
+    public void setPoints(int value)
+    {
+        points = value; 
+    }
+    public void incrementPoints()
+    {
+        points += 1;
+    }
+
     public float getWaitTime()
     {
         return readTimedelay;
@@ -46,7 +57,6 @@ public class CarTrace : MonoBehaviour
     public void setBestTraceData(List<TraceData>list)
     {
         bestTraceData = new List<TraceData>(list);
-        isBestTraceDataSetted = true;
     }
     public List<TraceData> getBestTraceData()
     {
@@ -131,8 +141,7 @@ public class CarTrace : MonoBehaviour
     }
 
     private void CarGetTraceTime(){
-        //float currentTime = Timer.GetTime();
-        //bool timeToReadTimer = checkTimeAndDelay(currentTime, carTime);
+
         float currentTime = carTime;
         bool timeToReadTimer = checkTimeAndDelay(carTime,lastTime);
 

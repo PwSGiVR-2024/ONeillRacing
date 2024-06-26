@@ -45,7 +45,7 @@ public class Checkpoint : MonoBehaviour
                 try
                 {
                     CarTrace carTrace = other.GetComponent<CarTrace>();
-                    carTrace.points += 1; 
+                    carTrace.incrementPoints(); 
                 } catch (Exception e)
                 {
                     Debug.LogWarning($"Nie moge sie dostaac do komponentu CarTrace {e}");

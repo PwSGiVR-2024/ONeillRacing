@@ -15,13 +15,8 @@ using UnityEngine;
 public class GhostTrigger : MonoBehaviour
 {
 
-    //Ghost ghost;
-    GameObject player;
-    bool isPlayer = false;
-    bool isGhost = false;
-    
-    CarTrace playerTrace;
-    public GameObject ghostGameObject; 
+    private CarTrace playerTrace;
+    private GameObject player;
 
     [SerializeField]
     public GameObject myPrefab; // ghost car prefab
@@ -29,8 +24,11 @@ public class GhostTrigger : MonoBehaviour
     [SerializeField]
     bool logTraceInfo;
 
+    private GameObject ghostGameObject;
     private int totalPoints;
     private bool debugOn = false;
+    private bool isPlayer = false;
+
     Checkpoint[] checkpoitns;
 
     [SerializeField]
@@ -50,10 +48,6 @@ public class GhostTrigger : MonoBehaviour
     Vector3 spawnPosition0;
     Quaternion spawnRotation0; 
 
-
-    //[SerializeField]
-    //public bool useTeleprot;
-
     void tryGetPlayer()
     {
         try
@@ -65,19 +59,6 @@ public class GhostTrigger : MonoBehaviour
             print($"[GhostTrigger]: Nie moge sie dostaæ do objektu o tagu Player \n {e}");
         }
     }
-
-    //void tryGetGhost()
-    //{
-    //    try
-    //    {
-    //        ghost = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Ghost>();
-    //        isGhost = true;
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        print("[GhostTrigger]: Nie moge sie dostaæ do objektu o tagu Ghost");
-    //    }
-    //}
 
     CarTrace tryGetPlayerTrace()
     {
@@ -109,15 +90,9 @@ public class GhostTrigger : MonoBehaviour
                 }
             }
 
-            int playerPoints = playerTrace.points;
+            int playerPoints = playerTrace.getPoints();
 
             //if (debugOn) print($"Mam {playerPoints} / {totalPoints} punktow");
-
-            //if (playerPoints != totalPoints)
-            //{
-            //    StopCoroutine(spawnGhost(colider));
-            //    yield return null;
-            //}
 
             List<TraceData> traceDataForGhost = playerTrace.GetTraceData();
 
@@ -145,10 +120,8 @@ public class GhostTrigger : MonoBehaviour
                 Debug.LogWarning($"[GhosTrigger.cs -> spawnGhost() ] Nie moge zainstancjonowaæ prefabu Ghosta, moze nie jest ustawiony?\n{e}");
                 StopCoroutine(spawnGhost(colider));
             }
-            // spawnLocation spawnRotation
             
             colider.transform.position = spawnPosition0; // jak sie uda zaladowac obiekt ducha to gracza teleportuje z powrotem do bazy i razem z duchem zaczyna wyscig ponownie
-            //colider.transform.rotation = spawnRotation0;
             colider.transform.rotation = Quaternion.Euler(0,90,0);
             colider.GetComponent<Rigidbody>().velocity = Vector3.zero;
 
@@ -159,18 +132,6 @@ public class GhostTrigger : MonoBehaviour
             //if (logTraceInfo) ghost.showGhostTraceInfo = true;
 
             ghost.setWaitTime(playerTrace.getWaitTime());
-
-            //if (useTeleprot)
-            //{
-            //    ghost.useTeleprot = true;
-            //    ghost.useMoveForwardFcn = false;
-            //}
-            //else
-            //{
-            //    ghost.useTeleprot = false;
-            //    ghost.useMoveForwardFcn = true;
-            //}
-                
 
             playerTrace.ClearCarTrace();
             Timer.ResetTimer();
@@ -186,7 +147,6 @@ public class GhostTrigger : MonoBehaviour
         }
         yield return null;
     }
-
 
     public void getQuantityOfCheckpoints()
     {
@@ -208,12 +168,12 @@ public class GhostTrigger : MonoBehaviour
             try
             {
                 CarTrace carTrace = colider.GetComponent<CarTrace>();
-                int playerPoints = carTrace.points;
+                int playerPoints = carTrace.getPoints();
                 
                 if (playerPoints  == totalPoints)
                 {
                     uncheckAllCheckpoints();
-                    carTrace.points = 0; // od nowa bedziemy zbierac punkty
+                    carTrace.setPoints(0); // od nowa bedziemy zbierac punkty
                     StartCoroutine(spawnGhost(colider));
                     Rigidbody rb = colider.GetComponent<Rigidbody>();
                     rb.velocity = new Vector3(0, 0, 0);
@@ -229,9 +189,7 @@ public class GhostTrigger : MonoBehaviour
             {
                 Debug.LogWarning("[GhostTrigger] Nie moglem odczytac CarTrace z komponentu gracza");
             }
-
         }
-        
     }
 
     private void setSpawnPosition()
@@ -267,7 +225,6 @@ public class GhostTrigger : MonoBehaviour
         getQuantityOfCheckpoints();
         setSpawnPosition();
         setSpawnRotation();
-        //tryGetGhost();
     }
 
     // Update is called once per frame
@@ -276,17 +233,3 @@ public class GhostTrigger : MonoBehaviour
         
     }
 }
-
-//player = colider.gameObject;
-//ghost = GameObject.FindGameObjectWithTag("Ghost").GetComponent<Ghost>();
-
-//playerTrace = player.GetComponent<CarTrace>();
-
-// print(playerTrace.rand);
-//print("--------------------------------------------------------\n");
-//string s = "";
-//foreach (TraceData obj in traceDataForGhost)
-//{
-//    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-//}
-//print(s);

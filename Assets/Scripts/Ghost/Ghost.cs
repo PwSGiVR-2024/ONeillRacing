@@ -25,14 +25,9 @@ public class Ghost : MonoBehaviour
 
     private float waitTime = 1; 
 
-    bool isDataSetted = false;
-
     private bool useTeleprot;
     
     private bool useMoveForwardFcn;
-
-    [SerializeField]
-    float dupa;
 
     float ghostTime = 0;
 
@@ -64,18 +59,10 @@ public class Ghost : MonoBehaviour
     public void setData(List<TraceData> _trace_) // trasa pobierana po pierwszym przejechaniu mety poprzez niewidoczny obiekt
     {
         StartCoroutine(setDataCorutine(_trace_));
-        //print("------------Ghost otrzymal--------------------\n");
-        //string s = "";
-        //foreach (TraceData obj in trace)
-        //{
-        //    s += (obj.time + " (" + obj.place.x + " " + obj.place.y + " " + obj.place.z + ") \n");
-        //}
-        //print(s);
     }
 
     public void runGhost(){
         StartCoroutine(GhostRiding());
-        //Destroy(gameObject);
     }
 
     private IEnumerator GhostRiding() // run ghost odpalany przez ukryty obiekt na mecie rowniez
@@ -85,48 +72,29 @@ public class Ghost : MonoBehaviour
         float timeFirst = 0;
         float timeNext = 0;
         float waitTime0 = 0;
+
         if(debugOn) print("[Ghost] rozpoczynam korutyne" + trace);
-        //Timer.ResetTimer();
+
         foreach(TraceData traceData in trace) {
             timeNext = traceData.time;
             waitTime0 = timeNext - timeFirst; //(float) Math.Round(timeNext - timeFirst,3);
             timeFirst = timeNext;
-            
             i++;
-            //Vector3 position = GetGhostCurentPosition();
-            //print("[Ghost]: changing position! to" + position);
             Vector3 posA = gameObject.transform.position;
             Vector3 posB = traceData.place;
 
-            float S = Vector3.Distance(posA, posB); // droga
-            float T = waitTime0; // czas
-            float V = S / T; // predkosc
-            float step = V * Time.deltaTime * 1000;
             Vector3 positionExpected = traceData.place;
             Vector3 ghostPosition = gameObject.transform.position;
-            if (debugOn) print("pozycja nr:" + i +  " [Ghost] Roznica czasu " + waitTime + ", step: " + step + "waitime: "+waitTime+" Droga: " + S + " Predkosc " + V +" GhostTime " + ghostTime + " time z cartrace: "+ traceData.time + " pozycja oczekiwana " + positionExpected +" pozycja ghosta " + ghostPosition);
+            if (debugOn) print("pozycja nr:" + i +  " [Ghost] Roznica czasu " + waitTime + "waitime: "+waitTime +" GhostTime " + ghostTime + " time z cartrace: "+ traceData.time + " pozycja oczekiwana " + positionExpected +" pozycja ghosta " + ghostPosition);
             if (useTeleprot) {
                 gameObject.transform.position = traceData.place; // teleportacja
                 gameObject.transform.rotation = traceData.roatation;
             }
             else if (useMoveForwardFcn)
             {
-                //jednak tez robi tekeoportacje przy tym 
-                //float step = waitTime * 5000 * Time.deltaTime;
-                //transform.position = Vector3.MoveTowards(posA, posB, step);
-
-
-                //Vector3 rotationVelocity = traceData.rotationVelocity;
                 ghostRigidBody.angularVelocity = traceData.rotationVelocity;
-                //gameObject.transform.position = traceData.place;
                 gameObject.transform.rotation = traceData.roatation;
-
-                //Quaternion deltaRotation = Quaternion.Euler(rotationVelocity * Time.fixedDeltaTime); // Oblicz zmianê rotacji na podstawie prêdkoœci k¹towej i czasu
-                //ghostRigidBody.MoveRotation(ghostRigidBody.rotation * deltaRotation);  // Obróæ Rigidbody o tê zmianê rotacji
-
-                //ghostRigidBody.MoveRotation(traceData.roatation);
                 ghostRigidBody.velocity = traceData.velocity;
-                //gameObject.transform.position = traceData.place;
 
                 // regulator bo samo velocity nadane na obiekt nie do koñca dzia³a
                 // dziala to tak ze biore sobie rozkladam wektory na skladowe x y z 
@@ -189,9 +157,8 @@ public class Ghost : MonoBehaviour
 
             }
 
-            
-            ghostTime += waitTime;
-            ghostTime = (float)Math.Round(ghostTime, 2);
+            if (debugOn)  ghostTime += waitTime;
+            if (debugOn)  ghostTime = (float)Math.Round(ghostTime, 2);
 
             yield return new WaitForSeconds(waitTime0);
         }

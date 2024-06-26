@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
                 source.Pause();
             }
 
-            sfxManager.LoadAndPlaySound("PauseOn");
+            //sfxManager.LoadAndPlaySound("PauseOn");
         }
         else {
             Time.timeScale = 1f;
@@ -67,7 +67,7 @@ public class UIManager : MonoBehaviour
                 if (source.CompareTag("Player") || source.CompareTag("Radio"))
                     source.Play();
 
-            sfxManager.LoadAndPlaySound("PauseOff");
+           // sfxManager.LoadAndPlaySound("PauseOff");
         }
         foreach (var element in uiElements)
             element.SetActive(!element.activeSelf);
