@@ -37,6 +37,12 @@ public class MainMenu : MonoBehaviour
         segments[1].SetActive(true);
     }
 
+    public void Controlls() {
+        blendCameraDelegate(4, CinemachineBlendDefinition.Style.EaseInOut, 1);
+        segments[0].SetActive(false);
+        segments[4].SetActive(true);
+    }
+
     public void ExitGame() {
         Application.Quit();
     }
@@ -47,6 +53,7 @@ public class MainMenu : MonoBehaviour
         segments[0].SetActive(true);
         segments[1].SetActive(false);
         segments[3].SetActive(false);
+        segments[4].SetActive(false);
     }
 
     public void LoadLevel1() {
