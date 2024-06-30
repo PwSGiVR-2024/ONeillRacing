@@ -220,7 +220,7 @@ LightProbeGroup:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5772750877183931594}
-  m_Enabled: 1
+  m_Enabled: 0
   m_SourcePositions:
   - {x: -1.0081922, y: 0.7482834, z: -0.45955235}
   - {x: -0.52129906, y: 0.7482834, z: -1.4062886}
