@@ -53,3 +53,4 @@
 *.unity linguist-generated
 *.aar filter=lfs diff=lfs merge=lfs -text
 Assets/Scenes/Level1/LightingData.asset filter=lfs diff=lfs merge=lfs -text
+Assets/Scenes/Level2/LightingData.asset filter=lfs diff=lfs merge=lfs -text
