@@ -54,3 +54,5 @@
 *.aar filter=lfs diff=lfs merge=lfs -text
 Assets/Scenes/Level1/LightingData.asset filter=lfs diff=lfs merge=lfs -text
 Assets/Scenes/Level2/LightingData.asset filter=lfs diff=lfs merge=lfs -text
+_game/* filter=lfs diff=lfs merge=lfs -text
+_game/O'NeillRacing_Data/* filter=lfs diff=lfs merge=lfs -text
